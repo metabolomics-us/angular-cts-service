@@ -1,0 +1,31 @@
+{
+	"name": "angular-cts-service",
+	"version": "0.0.0",
+	"authors": [
+		"Gert Wohlgemuth <berlinguy@gmail.com>"
+	],
+	"description": "a simple angular service to connect to the cts",
+	"main": "service.js",
+	"keywords": [
+		"angular",
+		"cts",
+		"chemify"
+	],
+	"license": "MIT",
+	"homepage": "cts.fiehnlab.ucdavis.edu",
+	"ignore": [
+		"**/.*",
+		"node_modules",
+		"bower_components",
+		"app/bower_components",
+		"test",
+		"tests"
+	],
+	"dependencies": {
+		"angular": "^1.0.8",
+		"angular-sanitize": "^1.0.8"
+	},
+	"devDependencies": {
+		"angular-mocks": "^1.0.8"
+	}
+}
