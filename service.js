@@ -15,12 +15,13 @@ angular.module('wohlgemuth.cts', []).
  */
 	service('gwCtsService', function () {
 
-		/**
-		 * converts from a molfile to an InChI Key
-		 * @param molFile
-		 */
-		this.convertFromMolToInchiKey = function (molFile) {
+		this.getNamesForInChIKey = function (inchiKey) {
+		};
 
+		this.convertToInchiKey = function (molecule) {
+
+		};
+		this.convertInchiKeyToMol = function (inchiKey) {
 		}
 	}).
 
