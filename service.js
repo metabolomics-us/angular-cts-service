@@ -13,15 +13,45 @@ angular.module('wohlgemuth.cts', []).
 /**
  * provides us with access to the general cts service
  */
-	service('gwCtsService', function () {
+	service('gwCtsService', function ($http) {
 
-		this.getNamesForInChIKey = function (inchiKey) {
+		/**
+		 * returns all known names for the given InChIKey
+		 * @param inchiKey
+		 * @param callback
+		 */
+		this.getNamesForInChIKey = function (inchiKey, callback) {
+			$http.get('http://cts.fiehnlab.ucdavis.edu/service/convert/InChIKey/Chemical%20Name/' + inchiKey).then(function (data) {
+				if (angular.isDefined(data.data)) {
+					data = data.data;
+
+					if (angular.isArray(data)) {
+						if (data.length > 0) {
+							data = data[0];
+							if (angular.isDefined(data.result)) {
+								callback(data.result);
+							}
+						}
+					}
+				}
+			})
 		};
 
-		this.convertToInchiKey = function (molecule) {
+		/**
+		 * converts the given Molecule to an InChI Key
+		 * @param molecule
+		 * @param callback
+		 */
+		this.convertToInchiKey = function (molecule, callback) {
 
 		};
-		this.convertInchiKeyToMol = function (inchiKey) {
+
+		/**
+		 * converts an InChI Key to a molecule
+		 * @param inchiKey
+		 * @param callback
+		 */
+		this.convertInchiKeyToMol = function (inchiKey, callback) {
 		}
 	}).
 

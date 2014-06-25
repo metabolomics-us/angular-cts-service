@@ -2,9 +2,54 @@
  * Created by Gert on 6/16/2014.
  */
 describe('wohlgemuth.cts test', function () {
+	beforeEach(module('wohlgemuth.cts'));
+
+	describe('when I call gwCtsService.getNamesForInChIKey', function () {
+		it('should return an array of names for the given InChI Key', inject(function (gwCtsService, $httpBackend) {
+
+
+			//setup our exspected response
+			$httpBackend.when('GET', 'http://cts.fiehnlab.ucdavis.edu/service/convert/InChIKey/Chemical%20Name/QNAYBMKLOCPYGJ-REOHCLBHSA-N').respond(
+				[
+					{
+						"fromIdentifier": "InChIKey",
+						"searchTerm": "QNAYBMKLOCPYGJ-REOHCLBHSA-N",
+						"toIdentifier": "Chemical Name",
+						"result": [
+
+							"(S)-()-Alanine",
+							"2-Aminopropionic acid",
+							"(S)-alanine",
+							"(2S)-2-Aminopropanoate",
+							"L-a-Aminopropionic acid",
+							"ALANINE, L-",
+							"Alanine"
+						]
+					}
+				]
+			);
+
+			var result = [];
+
+			gwCtsService.getNamesForInChIKey('QNAYBMKLOCPYGJ-REOHCLBHSA-N', function (data) {
+				result = data;
+			});
+			$httpBackend.flush();
+
+			expect(result).toEqual([
+				"(S)-()-Alanine",
+				"2-Aminopropionic acid",
+				"(S)-alanine",
+				"(2S)-2-Aminopropanoate",
+				"L-a-Aminopropionic acid",
+				"ALANINE, L-",
+				"Alanine"
+			]);
+
+		}))
+	});
 
 	describe('when I call gwChemifyService.nameToInChIKey', function () {
-		beforeEach(module('wohlgemuth.cts'));
 
 		it('should return 1 hit for alanine, since the cts knows about it', inject(function (gwChemifyService, $httpBackend) {
 
@@ -41,7 +86,12 @@ describe('wohlgemuth.cts test', function () {
 
 			//setup our exspected response
 			$httpBackend.when('GET', 'http://cts.fiehnlab.ucdavis.edu/chemify/rest/identify/alanineadasdas').respond(
-				[ { "result": "nothing found", "query": "alanineadasdas", "algorithm": "edu.ucdavis.fiehnlab.chemify.identify.NothingIdentifiedAtAll", "score": 0.0, "scoring_algorithm": "edu.ucdavis.fiehnlab.chemify.scoring.cts.ScoreByBiologicalCount", "enhancements": [ { "time(ms) for identification": "2324" }, { "unmodified search term": "alanineadasdas" } ] } ]
+				[
+					{ "result": "nothing found", "query": "alanineadasdas", "algorithm": "edu.ucdavis.fiehnlab.chemify.identify.NothingIdentifiedAtAll", "score": 0.0, "scoring_algorithm": "edu.ucdavis.fiehnlab.chemify.scoring.cts.ScoreByBiologicalCount", "enhancements": [
+						{ "time(ms) for identification": "2324" },
+						{ "unmodified search term": "alanineadasdas" }
+					] }
+				]
 			);
 
 			var result = "";
