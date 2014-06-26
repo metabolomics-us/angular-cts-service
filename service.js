@@ -52,6 +52,20 @@ angular.module('wohlgemuth.cts', []).
 		 * @param callback
 		 */
 		this.convertInchiKeyToMol = function (inchiKey, callback) {
+			$http.get('http://cts.fiehnlab.ucdavis.edu/service/convert/InChIKey/Chemical%20Name/' + inchiKey).then(function (data) {
+				if (angular.isDefined(data.data)) {
+					data = data.data;
+
+					if (angular.isArray(data)) {
+						if (data.length > 0) {
+							data = data[0];
+							if (angular.isDefined(data.result)) {
+								callback(data.result);
+							}
+						}
+					}
+				}
+			})
 		}
 	}).
 
