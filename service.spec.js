@@ -5,7 +5,7 @@ describe('wohlgemuth.cts test', function () {
 	beforeEach(module('wohlgemuth.cts'));
 
 	describe('when I call gwCtsService.getNamesForInChIKey', function () {
-		it('should return an array of names for the given InChI Key', inject(function (gwCtsService, $httpBackend, CTSURL) {
+		it('should return an array of names for the given InChI Key', inject(function (gwCtsService, $httpBackend, CTSURL,$log) {
 
 
 			//setup our exspected response
@@ -51,7 +51,7 @@ describe('wohlgemuth.cts test', function () {
 
 	describe('when I call gwChemifyService.nameToInChIKey', function () {
 
-		it('should return 1 hit for alanine, since the cts knows about it', inject(function (gwChemifyService, $httpBackend, CTSURL) {
+		it('should return 1 hit for alanine, since the cts knows about it', inject(function (gwChemifyService, $httpBackend, CTSURL,$log) {
 
 			//setup our exspected response
 			$httpBackend.when('GET', CTSURL + '/chemify/rest/identify/alanine').respond(
@@ -82,7 +82,7 @@ describe('wohlgemuth.cts test', function () {
 
 		}));
 
-		it('should return nothing for alanineadasdas , since the cts DOES NOT know about it', inject(function (gwChemifyService, $httpBackend, CTSURL) {
+		it('should return nothing for alanineadasdas , since the cts DOES NOT know about it', inject(function (gwChemifyService, $httpBackend, CTSURL,$log) {
 
 			//setup our exspected response
 			$httpBackend.when('GET', CTSURL + '/chemify/rest/identify/alanineadasdas').respond(
@@ -112,7 +112,7 @@ describe('wohlgemuth.cts test', function () {
 
 	describe('when I call gwCtsService.convertInchiKeyToMol', function () {
 
-		it('should return 1 hit for HQMLIDZJXVVKCW-REOHCLBHSA-O, since the cts knows about it', inject(function (gwCtsService, $httpBackend, CTSURL) {
+		it('should return 1 hit for HQMLIDZJXVVKCW-REOHCLBHSA-O, since the cts knows about it', inject(function (gwCtsService, $httpBackend, CTSURL,$log) {
 
 			//setup our exspected response
 			$httpBackend.when('GET', CTSURL + '/service/inchikeytomol/HQMLIDZJXVVKCW-REOHCLBHSA-O').respond(
@@ -133,7 +133,7 @@ describe('wohlgemuth.cts test', function () {
 
 		}));
 
-		it('should return null for HQMLIDZJXVVKCW-REOHCDBHSA-O, since the cts knows about it', inject(function (gwCtsService, $httpBackend, CTSURL) {
+		it('should return null for HQMLIDZJXVVKCW-REOHCDBHSA-O, since the cts knows about it', inject(function (gwCtsService, $httpBackend, CTSURL,$log) {
 
 			//setup our exspected response
 			$httpBackend.when('GET', CTSURL + '/service/inchikeytomol/HQMLIDZJXVVKCW-REOHCDBHSA-O').respond(
@@ -155,7 +155,7 @@ describe('wohlgemuth.cts test', function () {
 		}));
 
 
-		it('should call the error handler for ABC, since its an invalid inchi key', inject(function (gwCtsService, $httpBackend, CTSURL) {
+		it('should call the error handler for ABC, since its an invalid inchi key', inject(function (gwCtsService, $httpBackend, CTSURL,$log) {
 
 			//setup our exspected response
 			$httpBackend.when('GET', CTSURL + '/service/inchikeytomol/ABC').respond(

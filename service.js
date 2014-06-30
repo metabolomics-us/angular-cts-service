@@ -10,13 +10,13 @@ angular.module('wohlgemuth.cts', []).
 		$httpProvider.defaults.useXDomain = true;
 		delete $httpProvider.defaults.headers.common['X-Requested-With'];
 	}).
-	constant('CTSURL', 'http://www.corsproxy.com/cts.fiehnlab.ucdavis.edu').
-	//constant('CTSURL', 'http://127.0.0.1:9292/cts.fiehnlab.ucdavis.edu').
+	//constant('CTSURL', 'http://www.corsproxy.com/cts.fiehnlab.ucdavis.edu').
+	constant('CTSURL', 'http://127.0.0.1:9292/cts.fiehnlab.ucdavis.edu').
 
 /**
  * provides us with access to the general cts service
  */
-	service('gwCtsService', function ($http, CTSURL) {
+	service('gwCtsService', function ($http, CTSURL,$log) {
 
 		/**
 		 * returns all known names for the given InChIKey
@@ -45,7 +45,7 @@ angular.module('wohlgemuth.cts', []).
 					errorCallback(error);
 				}
 				else {
-					console.log(error);
+					$log.error(error);
 				}
 			});
 		};
@@ -58,6 +58,9 @@ angular.module('wohlgemuth.cts', []).
 		 */
 		this.convertToInchiKey = function (molecule, callback, errorCallback) {
 			$http.post(CTSURL + '/service/molToInchi/',{mol:molecule}).then(function (data) {
+
+                console.log(data);
+
 				if (angular.isDefined(data.data)) {
 
 					data = data.data;
@@ -66,7 +69,7 @@ angular.module('wohlgemuth.cts', []).
 							errorCallback(data.error);
 						}
 						else{
-							console.log('error: ' + error);
+                            $log.error('error: ' + error);
 						}
 					}
 					else if (angular.isDefined(data.molecule)) {
@@ -84,7 +87,7 @@ angular.module('wohlgemuth.cts', []).
 					errorCallback(error);
 				}
 				else {
-					console.log(error);
+                    $log.error(error);
 				}
 			});
 		};
@@ -105,7 +108,7 @@ angular.module('wohlgemuth.cts', []).
 							errorCallback(data.error);
 						}
 						else{
-							console.log('error: ' + error);
+                            $log.error('error: ' + error);
 						}
 					}
 					else if (angular.isDefined(data.molecule)) {
@@ -123,7 +126,7 @@ angular.module('wohlgemuth.cts', []).
 					errorCallback(error);
 				}
 				else {
-					console.log(error);
+                    $log.error('error:' + error);
 				}
 			});
 		};
@@ -133,7 +136,7 @@ angular.module('wohlgemuth.cts', []).
 /**
  * provides us with access to the chemify service
  */
-	service('gwChemifyService', function ($http, CTSURL) {
+	service('gwChemifyService', function ($http, CTSURL,$log) {
 
 		/**
 		 * converts the given name to an InChI Key
@@ -167,7 +170,7 @@ angular.module('wohlgemuth.cts', []).
 					errorCallback(error);
 				}
 				else {
-					console.log(error);
+                    $log.error(error);
 				}
 			});
 		}
