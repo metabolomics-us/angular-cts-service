@@ -45,7 +45,7 @@ angular.module('wohlgemuth.cts', []).
 					errorCallback(error);
 				}
 				else {
-					$log.error(error);
+					$log.warn(error);
 				}
 			});
 		};
@@ -69,7 +69,7 @@ angular.module('wohlgemuth.cts', []).
 							errorCallback(data.error);
 						}
 						else{
-                            $log.error('error: ' + error);
+                            $log.warn('error: ' + error);
 						}
 					}
 					else if (angular.isDefined(data.molecule)) {
@@ -87,7 +87,7 @@ angular.module('wohlgemuth.cts', []).
 					errorCallback(error);
 				}
 				else {
-                    $log.error(error);
+                    $log.warn(error);
 				}
 			});
 		};
@@ -108,7 +108,7 @@ angular.module('wohlgemuth.cts', []).
 							errorCallback(data.error);
 						}
 						else{
-                            $log.error('error: ' + error);
+                            $log.warn('error: ' + error);
 						}
 					}
 					else if (angular.isDefined(data.molecule)) {
@@ -126,7 +126,7 @@ angular.module('wohlgemuth.cts', []).
 					errorCallback(error);
 				}
 				else {
-                    $log.error('error:' + error);
+                    $log.warn('error:' + error);
 				}
 			});
 		};
@@ -146,7 +146,7 @@ angular.module('wohlgemuth.cts', []).
 		this.nameToInChIKey = function (chemicalName, callback, errorCallback) {
 			$http.defaults.useXDomain = true;
 
-			$http.get(CTSURL + '/chemify/rest/identify/' + chemicalName).then(function (data) {
+			$http.get(CTSURL + '/chemify/rest/identify/' + encodeURI(chemicalName)).then(function (data) {
 				var result = "";
 
 				if (angular.isDefined(data.data)) {
@@ -170,7 +170,7 @@ angular.module('wohlgemuth.cts', []).
 					errorCallback(error);
 				}
 				else {
-                    $log.error(error);
+                    $log.warn(error);
 				}
 			});
 		}
