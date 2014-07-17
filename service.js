@@ -10,8 +10,7 @@ angular.module('wohlgemuth.cts', []).
         $httpProvider.defaults.useXDomain = true;
         delete $httpProvider.defaults.headers.common['X-Requested-With'];
     }).
-    //constant('CTSURL', 'http://www.corsproxy.com/cts.fiehnlab.ucdavis.edu').
-    constant('CTSURL', 'http://127.0.0.1:9292/cts.fiehnlab.ucdavis.edu').
+    constant('CTSURL', 'http://cream.fiehnlab.ucdavis.edu:9292/cts.fiehnlab.ucdavis.edu').
 
     factory(
     "transformRequestAsFormPost",
@@ -170,7 +169,7 @@ angular.module('wohlgemuth.cts', []).
 
                     }
                     else{
-                        $log.debug('no data object is defined!');
+                        //$log.debug('no data object is defined!');
                     }
                 }).catch(function (error) {
                     if (angular.isDefined(errorCallback)) {
