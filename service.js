@@ -16,7 +16,6 @@ angular.module('wohlgemuth.cts', []).
     "transformRequestAsFormPost",
     function () {
 
-// I prepare the request data for the form post.
         function transformRequest(data, getHeaders) {
 
             var headers = getHeaders();
@@ -27,26 +26,11 @@ angular.module('wohlgemuth.cts', []).
 
         }
 
-
-// Return the factory value.
         return( transformRequest );
 
 
-// ---
-// PRVIATE METHODS.
-// ---
-
-
-// I serialize the given Object into a key-value pair string. This
-// method expects an object and will default to the toString() method.
-// --
-// NOTE: This is an atered version of the jQuery.param() method which
-// will serialize a data collection for Form posting.
-// --
-// https://github.com/jquery/jquery/blob/master/src/serialize.js#L45
         function serializeData(data) {
 
-// If this is not an object, defer to native stringification.
             if (!angular.isObject(data)) {
 
                 return( ( data == null ) ? "" : data.toString() );
@@ -55,7 +39,6 @@ angular.module('wohlgemuth.cts', []).
 
             var buffer = [];
 
-// Serialize each key in the object.
             for (var name in data) {
 
                 if (!data.hasOwnProperty(name)) {
@@ -74,7 +57,6 @@ angular.module('wohlgemuth.cts', []).
 
             }
 
-// Serialize the buffer and clean it up for transportation.
             var source = buffer
                     .join("&")
                     .replace(/%20/g, "+")
@@ -90,7 +72,8 @@ angular.module('wohlgemuth.cts', []).
 /**
  * provides us with access to the general cts service
  */
-    .service('gwCtsService', function ($http, CTSURL, $log,transformRequestAsFormPost) {
+    .service('gwCtsService', function ($http, CTSURL, $log, transformRequestAsFormPost) {
+        $http.defaults.useXDomain = true;
 
         /**
          * returns all known names for the given InChIKey
@@ -99,7 +82,6 @@ angular.module('wohlgemuth.cts', []).
          * @param errorCallback
          */
         this.getNamesForInChIKey = function (inchiKey, callback, errorCallback) {
-            $http.defaults.useXDomain = true;
 
             $http.get(CTSURL + '/service/convert/InChIKey/Chemical%20Name/' + inchiKey).then(function (data) {
                 if (angular.isDefined(data.data)) {
@@ -111,8 +93,8 @@ angular.module('wohlgemuth.cts', []).
                             if (angular.isDefined(data.result)) {
                                 var names = [];
 
-                                for(var i = 0; i < data.result.length; i++){
-                                    names.push({name:data.result[i]});
+                                for (var i = 0; i < data.result.length; i++) {
+                                    names.push({name: data.result[i]});
                                 }
                                 callback(names);
                             }
@@ -168,7 +150,7 @@ angular.module('wohlgemuth.cts', []).
                         }
 
                     }
-                    else{
+                    else {
                         //$log.debug('no data object is defined!');
                     }
                 }).catch(function (error) {
@@ -219,6 +201,107 @@ angular.module('wohlgemuth.cts', []).
                 }
             });
         };
+
+        /**
+         * converts an inchi code to an inchi keyß
+         * @param inchiCode
+         * @param callback
+         * @param errorCallback
+         */
+        this.convertInChICodeToKey = function (inchiCode, callback, errorCallback) {
+            $http({
+                    method: "post",
+                    url: CTSURL + '/service/inchicodetoinchikey/',
+                    transformRequest: transformRequestAsFormPost,
+                    data: {
+                        inchicode: inchiCode
+                    }
+                }
+            ).success(function (data) {
+
+                    if (angular.isDefined(data)) {
+
+                        if (angular.isDefined(data.error)) {
+                            if (angular.isDefined(errorCallback)) {
+                                errorCallback(data.error);
+                            }
+                            else {
+                                $log.warn('error: ' + error);
+                            }
+                        }
+                        else if (angular.isDefined(data.inchikey)) {
+                            if (data.inchikey === "") {
+                                callback(null);
+                            }
+                            else {
+                                callback(data.inchikey);
+                            }
+                        }
+
+                    }
+                    else {
+                        $log.debug('no data object is defined!');
+                    }
+                }).catch(function (error) {
+                    if (angular.isDefined(errorCallback)) {
+                        errorCallback(error);
+                    }
+                    else {
+                        $log.warn(error);
+                    }
+                });
+        };
+
+        /**
+         * provides us with the molfile for this key
+         * @param inchiCode
+         * @param callback
+         * @param errorCallback
+         */
+        this.convertInChICodeToMol = function (inchiCode, callback, errorCallback) {
+            $http({
+                    method: "post",
+                    url: CTSURL + '/service/inchitomol/',
+                    transformRequest: transformRequestAsFormPost,
+                    data: {
+                        inchicode: inchiCode
+                    }
+                }
+            ).success(function (data) {
+
+                    if (angular.isDefined(data)) {
+
+                        if (angular.isDefined(data.error)) {
+                            if (angular.isDefined(errorCallback)) {
+                                errorCallback(data.error);
+                            }
+                            else {
+                                $log.warn('error: ' + error);
+                            }
+                        }
+                        else if (angular.isDefined(data.molecule)) {
+                            if (data.molecule === "") {
+                                callback(null);
+                            }
+                            else {
+                                callback(data.molecule);
+                            }
+                        }
+
+                    }
+                    else {
+                        $log.debug('no data object is defined!');
+                    }
+                }).catch(function (error) {
+                    if (angular.isDefined(errorCallback)) {
+                        errorCallback(error);
+                    }
+                    else {
+                        $log.warn(error);
+                    }
+                });
+        };
+
     }).
 
 
@@ -226,6 +309,7 @@ angular.module('wohlgemuth.cts', []).
  * provides us with access to the chemify service
  */
     service('gwChemifyService', function ($http, CTSURL, $log) {
+        $http.defaults.useXDomain = true;
 
         /**
          * converts the given name to an InChI Key
@@ -233,7 +317,6 @@ angular.module('wohlgemuth.cts', []).
          * @param callback
          */
         this.nameToInChIKey = function (chemicalName, callback, errorCallback) {
-            $http.defaults.useXDomain = true;
 
             $http.get(CTSURL + '/chemify/rest/identify/' + encodeURI(chemicalName)).then(function (data) {
                 var result = "";
