@@ -106,7 +106,12 @@ angular.module('wohlgemuth.cts', []).
                     errorCallback(error);
                 }
                 else {
-                    $log.warn(error);
+                    if (error != null) {
+                        $log.warn('error: ' + error);
+                    }
+                    else {
+                        $log.warn("no error message provided!");
+                    }
                 }
             });
         };
@@ -137,7 +142,12 @@ angular.module('wohlgemuth.cts', []).
                                 errorCallback(data.error);
                             }
                             else {
-                                $log.warn('error: ' + error);
+                                if (error != null) {
+                                    $log.warn('error: ' + error);
+                                }
+                                else {
+                                    $log.warn("no error message provided!");
+                                }
                             }
                         }
                         else if (angular.isDefined(data.inchikey)) {
@@ -158,7 +168,12 @@ angular.module('wohlgemuth.cts', []).
                         errorCallback(error);
                     }
                     else {
-                        $log.warn(error);
+                        if (error != null) {
+                            $log.warn('error: ' + error);
+                        }
+                        else {
+                            $log.warn("no error message provided!");
+                        }
                     }
                 });
         };
@@ -179,7 +194,12 @@ angular.module('wohlgemuth.cts', []).
                             errorCallback(data.error);
                         }
                         else {
-                            $log.warn('error: ' + error);
+                            if (error != null) {
+                                $log.warn('error: ' + error);
+                            }
+                            else {
+                                $log.warn("no error message provided!");
+                            }
                         }
                     }
                     else if (angular.isDefined(data.molecule)) {
@@ -197,7 +217,12 @@ angular.module('wohlgemuth.cts', []).
                     errorCallback(error);
                 }
                 else {
-                    $log.warn('error:' + error);
+                    if (error != null) {
+                        $log.warn('error: ' + error);
+                    }
+                    else {
+                        $log.warn("no error message provided!");
+                    }
                 }
             });
         };
@@ -226,7 +251,12 @@ angular.module('wohlgemuth.cts', []).
                                 errorCallback(data.error);
                             }
                             else {
-                                $log.warn('error: ' + error);
+                                if (error != null) {
+                                    $log.warn('error: ' + error);
+                                }
+                                else {
+                                    $log.warn("no error message provided!");
+                                }
                             }
                         }
                         else if (angular.isDefined(data.inchikey)) {
@@ -247,7 +277,12 @@ angular.module('wohlgemuth.cts', []).
                         errorCallback(error);
                     }
                     else {
-                        $log.warn(error);
+                        if (error != null) {
+                            $log.warn('error: ' + error);
+                        }
+                        else {
+                            $log.warn("no error message provided!");
+                        }
                     }
                 });
         };
@@ -276,7 +311,12 @@ angular.module('wohlgemuth.cts', []).
                                 errorCallback(data.error);
                             }
                             else {
-                                $log.warn('error: ' + error);
+                                if (error != null) {
+                                    $log.warn('error: ' + error);
+                                }
+                                else {
+                                    $log.warn("no error message provided!");
+                                }
                             }
                         }
                         else if (angular.isDefined(data.molecule)) {
@@ -297,10 +337,77 @@ angular.module('wohlgemuth.cts', []).
                         errorCallback(error);
                     }
                     else {
-                        $log.warn(error);
+                        if (error != null) {
+                            $log.warn('error: ' + error);
+                        }
+                        else {
+                            $log.warn("no error message provided!");
+                        }
                     }
                 });
         };
+
+        /**
+         * babel based fallback method
+         * @param inchiCode
+         * @param callback
+         * @param errorCallback
+         */
+        this.convertInChICodeToMolUsingBabel = function (inchiCode, callback, errorCallback) {
+            $http({
+                    method: "post",
+                    url: "http://cream.fiehnlab.ucdavis.edu:9292/cream.fiehnlab.ucdavis.edu:10000" + '/babel',
+                    transformRequest: transformRequestAsFormPost,
+                    data: {
+                        inchi: inchiCode
+                    }
+                }
+            ).success(function (data) {
+
+                    if (angular.isDefined(data)) {
+
+                        if (angular.isDefined(data.error)) {
+                            if (angular.isDefined(errorCallback)) {
+                                errorCallback(data.error);
+                            }
+                            else {
+                                if (error != null) {
+                                    $log.warn('error: ' + error);
+                                }
+                                else {
+                                    $log.warn("no error message provided!");
+                                }
+                            }
+                        }
+                        else if (angular.isDefined(data.mol)) {
+                            if (data.mol === "") {
+                                callback(null);
+                            }
+                            else {
+                                callback(data.mol);
+                            }
+                        }
+
+                    }
+                    else {
+                        $log.debug('no data object is defined!');
+                    }
+                }).catch(function (error) {
+
+                    if (angular.isDefined(errorCallback)) {
+                        errorCallback(error);
+                    }
+                    else {
+                        if (error != null) {
+                            $log.warn('error: ' + error);
+                        }
+                        else {
+                            $log.warn("no error message provided!");
+                        }
+                    }
+                });
+        };
+
 
     }).
 
@@ -342,7 +449,12 @@ angular.module('wohlgemuth.cts', []).
                     errorCallback(error);
                 }
                 else {
-                    $log.warn(error);
+                    if (error != null) {
+                        $log.warn('error: ' + error);
+                    }
+                    else {
+                        $log.warn("no error message provided!");
+                    }
                 }
             });
         }
