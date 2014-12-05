@@ -17,34 +17,27 @@ angular.module('wohlgemuth.cts', []).
     function () {
 
         function transformRequest(data, getHeaders) {
-
             var headers = getHeaders();
 
-            headers[ "Content-type" ] = "application/x-www-form-urlencoded; charset=utf-8";
+            headers["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
+            console.log(headers);
 
-            return( serializeData(data) );
-
+            return(serializeData(data));
         }
 
-        return( transformRequest );
+        return(transformRequest);
 
 
         function serializeData(data) {
-
             if (!angular.isObject(data)) {
-
                 return( ( data == null ) ? "" : data.toString() );
-
             }
 
             var buffer = [];
 
             for (var name in data) {
-
                 if (!data.hasOwnProperty(name)) {
-
                     continue;
-
                 }
 
                 var value = data[ name ];
@@ -59,13 +52,10 @@ angular.module('wohlgemuth.cts', []).
 
             var source = buffer
                     .join("&")
-                    .replace(/%20/g, "+")
-                ;
+                    .replace(/%20/g, "+");
 
-            return( source );
-
+            return(source);
         }
-
     }
 )
 
@@ -203,7 +193,7 @@ angular.module('wohlgemuth.cts', []).
                         }
                     }
                     else if (angular.isDefined(data.molecule)) {
-                        if (data.molecule === "") {
+                        if (data.molecule === "" || data.molecule === null) {
                             callback(null);
                         }
                         else {
