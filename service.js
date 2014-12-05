@@ -4,29 +4,22 @@
 
 'use strict';
 
-angular.module('wohlgemuth.cts', []).
-    config(function ($httpProvider) {
+angular.module('wohlgemuth.cts', [])
+    .config(function ($httpProvider) {
         //Enable cross domain calls
         $httpProvider.defaults.useXDomain = true;
         delete $httpProvider.defaults.headers.common['X-Requested-With'];
-    }).
-    constant('CTSURL', 'http://cream.fiehnlab.ucdavis.edu:9292/cts.fiehnlab.ucdavis.edu').
+    })
 
-    factory(
-    "transformRequestAsFormPost",
-    function () {
+    .constant('CTSURL', 'http://cream.fiehnlab.ucdavis.edu:9292/cts.fiehnlab.ucdavis.edu')
 
+    .factory("transformRequestAsFormPost", function () {
         function transformRequest(data, getHeaders) {
             var headers = getHeaders();
-
             headers["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
-            console.log(headers);
 
             return(serializeData(data));
         }
-
-        return(transformRequest);
-
 
         function serializeData(data) {
             if (!angular.isObject(data)) {
@@ -41,27 +34,20 @@ angular.module('wohlgemuth.cts', []).
                 }
 
                 var value = data[ name ];
-
-                buffer.push(
-                        encodeURIComponent(name) +
-                        "=" +
-                        encodeURIComponent(( value == null ) ? "" : value)
-                );
-
+                buffer.push(encodeURIComponent(name) +"="+ encodeURIComponent(( value == null ) ? "" : value));
             }
 
-            var source = buffer
-                    .join("&")
-                    .replace(/%20/g, "+");
+            var source = buffer.join("&").replace(/%20/g, "+");
 
             return(source);
         }
-    }
-)
 
-/**
- * provides us with access to the general cts service
- */
+        return(transformRequest);
+    })
+
+    /**
+     * provides us with access to the general cts service
+     */
     .service('gwCtsService', function ($http, CTSURL, $log, transformRequestAsFormPost) {
         $http.defaults.useXDomain = true;
 
