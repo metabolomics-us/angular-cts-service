@@ -4,74 +4,50 @@
 
 'use strict';
 
-angular.module('wohlgemuth.cts', []).
-    config(function ($httpProvider) {
+angular.module('wohlgemuth.cts', [])
+    .config(function ($httpProvider) {
         //Enable cross domain calls
         $httpProvider.defaults.useXDomain = true;
         delete $httpProvider.defaults.headers.common['X-Requested-With'];
-    }).
-    constant('CTSURL', 'http://cream.fiehnlab.ucdavis.edu:9292/cts.fiehnlab.ucdavis.edu').
+    })
 
-    factory(
-    "transformRequestAsFormPost",
-    function () {
+    .constant('CTSURL', 'http://cream.fiehnlab.ucdavis.edu:9292/cts.fiehnlab.ucdavis.edu')
 
+    .factory("transformRequestAsFormPost", function () {
         function transformRequest(data, getHeaders) {
-
             var headers = getHeaders();
+            headers["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
 
-            headers["Content-type"] = "application/x-www-form-urlencoded; charset=utf-8";
-
-            return ( serializeData(data) );
-
+            return(serializeData(data));
         }
 
-        return ( transformRequest );
-
-
         function serializeData(data) {
-
             if (!angular.isObject(data)) {
-
-                return ( ( data == null ) ? "" : data.toString() );
-
+                return( ( data == null ) ? "" : data.toString() );
             }
 
             var buffer = [];
 
             for (var name in data) {
-
                 if (!data.hasOwnProperty(name)) {
-
                     continue;
-
                 }
 
-                var value = data[name];
-
-                buffer.push(
-                    encodeURIComponent(name) +
-                    "=" +
-                    encodeURIComponent(( value == null ) ? "" : value)
-                );
-
+                var value = data[ name ];
+                buffer.push(encodeURIComponent(name) +"="+ encodeURIComponent(( value == null ) ? "" : value));
             }
 
-            var source = buffer
-                    .join("&")
-                    .replace(/%20/g, "+")
-                ;
+            var source = buffer.join("&").replace(/%20/g, "+");
 
-            return ( source );
-
+            return(source);
         }
 
-    }
-)
+        return(transformRequest);
+    })
 
-/**
- * provides us with access to the general cts service
- */
+    /**
+     * provides us with access to the general cts service
+     */
     .service('gwCtsService', function ($http, CTSURL, $log, transformRequestAsFormPost) {
         $http.defaults.useXDomain = true;
 
@@ -203,7 +179,7 @@ angular.module('wohlgemuth.cts', []).
                         }
                     }
                     else if (angular.isDefined(data.molecule)) {
-                        if (data.molecule === "") {
+                        if (data.molecule === "" || data.molecule === null) {
                             callback(null);
                         }
                         else {
@@ -303,12 +279,10 @@ angular.module('wohlgemuth.cts', []).
                     }
                 }
             ).success(function (data) {
-                    $log.debug('received data: ');
-                    $log.debug(data);
+
                     if (angular.isDefined(data)) {
 
                         if (angular.isDefined(data.error)) {
-                            $log.debug('error tag was specfified...');
                             if (angular.isDefined(errorCallback)) {
                                 errorCallback(data.error);
                             }
@@ -322,13 +296,10 @@ angular.module('wohlgemuth.cts', []).
                             }
                         }
                         else if (angular.isDefined(data.molecule)) {
-                            $log.debug('molecule is defiend...');
                             if (data.molecule === "") {
-                                $log.debug('molecule content is empty...');
                                 callback(null);
                             }
                             else {
-                                $log.debug('molecule is send back...');
                                 callback(data.molecule);
                             }
                         }
