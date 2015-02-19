@@ -20,20 +20,20 @@ angular.module('wohlgemuth.cts', []).
 
             var headers = getHeaders();
 
-            headers[ "Content-type" ] = "application/x-www-form-urlencoded; charset=utf-8";
+            headers["Content-type"] = "application/x-www-form-urlencoded; charset=utf-8";
 
-            return( serializeData(data) );
+            return ( serializeData(data) );
 
         }
 
-        return( transformRequest );
+        return ( transformRequest );
 
 
         function serializeData(data) {
 
             if (!angular.isObject(data)) {
 
-                return( ( data == null ) ? "" : data.toString() );
+                return ( ( data == null ) ? "" : data.toString() );
 
             }
 
@@ -47,12 +47,12 @@ angular.module('wohlgemuth.cts', []).
 
                 }
 
-                var value = data[ name ];
+                var value = data[name];
 
                 buffer.push(
-                        encodeURIComponent(name) +
-                        "=" +
-                        encodeURIComponent(( value == null ) ? "" : value)
+                    encodeURIComponent(name) +
+                    "=" +
+                    encodeURIComponent(( value == null ) ? "" : value)
                 );
 
             }
@@ -62,7 +62,7 @@ angular.module('wohlgemuth.cts', []).
                     .replace(/%20/g, "+")
                 ;
 
-            return( source );
+            return ( source );
 
         }
 
@@ -303,10 +303,12 @@ angular.module('wohlgemuth.cts', []).
                     }
                 }
             ).success(function (data) {
-
+                    $log.debug('received data: ');
+                    $log.debug(data);
                     if (angular.isDefined(data)) {
 
                         if (angular.isDefined(data.error)) {
+                            $log.debug('error tag was specfified...');
                             if (angular.isDefined(errorCallback)) {
                                 errorCallback(data.error);
                             }
@@ -320,10 +322,13 @@ angular.module('wohlgemuth.cts', []).
                             }
                         }
                         else if (angular.isDefined(data.molecule)) {
+                            $log.debug('molecule is defiend...');
                             if (data.molecule === "") {
+                                $log.debug('molecule content is empty...');
                                 callback(null);
                             }
                             else {
+                                $log.debug('molecule is send back...');
                                 callback(data.molecule);
                             }
                         }
