@@ -8,10 +8,10 @@ angular.module('wohlgemuth.cts', [])
     .config(function ($httpProvider) {
         //Enable cross domain calls
         $httpProvider.defaults.useXDomain = true;
-        delete $httpProvider.defaults.headers.common['X-Requested-With'];
+      //  delete $httpProvider.defaults.headers.common['X-Requested-With'];
     })
 
-    .constant('CTSURL', 'http://cream.fiehnlab.ucdavis.edu:9292/cts.fiehnlab.ucdavis.edu')
+    .constant('CTSURL', 'http://ctstest.fiehnlab.ucdavis.edu')
 
     .factory("transformRequestAsFormPost", function () {
         function transformRequest(data, getHeaders) {
@@ -59,7 +59,7 @@ angular.module('wohlgemuth.cts', [])
          */
         this.getNamesForInChIKey = function (inchiKey, callback, errorCallback) {
 
-            $http.get(CTSURL + '/service/convert/InChIKey/Chemical%20Name/' + inchiKey).then(function (data) {
+            $http.get(CTSURL + '/rest/convert/InChIKey/Chemical%20Name/' + inchiKey).then(function (data) {
                 if (angular.isDefined(data.data)) {
                     data = data.data;
 
@@ -101,7 +101,7 @@ angular.module('wohlgemuth.cts', [])
         this.convertToInchiKey = function (molecule, callback, errorCallback) {
             $http({
                     method: "post",
-                    url: CTSURL + '/service/molToInchi/',
+                    url: CTSURL + '/rest/molToInchi/',
                     transformRequest: transformRequestAsFormPost,
                     data: {
                         mol: molecule
@@ -161,7 +161,7 @@ angular.module('wohlgemuth.cts', [])
          * @param errorCallback
          */
         this.convertInchiKeyToMol = function (inchiKey, callback, errorCallback) {
-            $http.get(CTSURL + '/service/inchikeytomol/' + inchiKey).then(function (data) {
+            $http.get(CTSURL + '/rest/inchikeytomol/' + inchiKey).then(function (data) {
                 if (angular.isDefined(data.data)) {
 
                     data = data.data;
@@ -212,7 +212,7 @@ angular.module('wohlgemuth.cts', [])
         this.convertInChICodeToKey = function (inchiCode, callback, errorCallback) {
             $http({
                     method: "post",
-                    url: CTSURL + '/service/inchicodetoinchikey/',
+                    url: CTSURL + '/rest/inchicodetoinchikey/',
                     transformRequest: transformRequestAsFormPost,
                     data: {
                         inchicode: inchiCode
@@ -272,7 +272,7 @@ angular.module('wohlgemuth.cts', [])
         this.convertInChICodeToMol = function (inchiCode, callback, errorCallback) {
             $http({
                     method: "post",
-                    url: CTSURL + '/service/inchitomol/',
+                    url: CTSURL + '/rest/inchitomol/',
                     transformRequest: transformRequestAsFormPost,
                     data: {
                         inchicode: inchiCode
@@ -401,7 +401,7 @@ angular.module('wohlgemuth.cts', [])
          */
         this.nameToInChIKey = function (chemicalName, callback, errorCallback) {
 
-            $http.get(CTSURL + '/chemify/rest/identify/' + encodeURI(chemicalName)).then(function (data) {
+            $http.get(CTSURL + '/rest/chemify/identify/' + encodeURI(chemicalName)).then(function (data) {
                 var result = "";
 
                 if (angular.isDefined(data.data)) {
