@@ -8,10 +8,12 @@ angular.module('wohlgemuth.cts', [])
     .config(function ($httpProvider) {
         //Enable cross domain calls
         $httpProvider.defaults.useXDomain = true;
-      //  delete $httpProvider.defaults.headers.common['X-Requested-With'];
+        delete $httpProvider.defaults.headers.common['X-Requested-With'];
     })
 
-    .constant('CTSURL', 'http://ctstest.fiehnlab.ucdavis.edu')
+ //   .constant('CTSURL', 'http://192.168.59.103/')
+	.constant('CTSURL', 'http://ctstest.fiehnlab.ucdavis.edu')
+
 
     .factory("transformRequestAsFormPost", function () {
         function transformRequest(data, getHeaders) {
@@ -73,6 +75,42 @@ angular.module('wohlgemuth.cts', [])
                                     names.push({name: data.result[i]});
                                 }
                                 callback(names);
+                            }
+                        }
+                    }
+                }
+            }).catch(function (error) {
+                if (angular.isDefined(errorCallback)) {
+                    errorCallback(error);
+                }
+                else {
+                    if (error != null) {
+                        $log.warn('error: ' + error);
+                    }
+                    else {
+                        $log.warn("no error message provided!");
+                    }
+                }
+            });
+        };
+
+        /**
+         * returns all known names for the given InChIKey
+         * @param inchiKey
+         * @param callback
+         * @param errorCallback
+         */
+        this.convertInChIKeyToInChICode = function (inchiKey, callback, errorCallback) {
+
+            $http.get(CTSURL + '/rest/convert/InChIKey/InChI Code/' + inchiKey).then(function (data) {
+                if (angular.isDefined(data.data)) {
+                    data = data.data;
+
+                    if (angular.isArray(data)) {
+                        if (data.length > 0) {
+                            data = data[0];
+                            if (angular.isDefined(data.result)) {
+                                callback(data.result[0]);
                             }
                         }
                     }
@@ -201,6 +239,66 @@ angular.module('wohlgemuth.cts', [])
                     }
                 }
             });
+        };
+
+        /**
+         * utilizes chemspider to convert from a smiles to an inchi
+         * @param smiles
+         * @param callback
+         * @param errorCallback
+         */
+        this.convertSmileToInChICode = function(smiles, callback, errorCallback){
+            $http({
+                    method: "post",
+                    url: CTSURL + '/rest/smilesToInchi/',
+                    transformRequest: transformRequestAsFormPost,
+                    data: {
+                        smiles: smiles.trim()
+                    }
+                }
+            ).success(function (data) {
+
+                    if (angular.isDefined(data)) {
+
+                        if (angular.isDefined(data.error)) {
+                            if (angular.isDefined(errorCallback)) {
+                                errorCallback(data.error);
+                            }
+                            else {
+                                if (error != null) {
+                                    $log.warn('error: ' + error);
+                                }
+                                else {
+                                    $log.warn("no error message provided!");
+                                }
+                            }
+                        }
+                        else if (angular.isDefined(data.inchikey)) {
+                            if (data.inchikey === "") {
+                                callback(null);
+                            }
+                            else {
+                                callback(data);
+                            }
+                        }
+
+                    }
+                    else {
+                        //$log.debug('no data object is defined!');
+                    }
+                }).catch(function (error) {
+                    if (angular.isDefined(errorCallback)) {
+                        errorCallback(error);
+                    }
+                    else {
+                        if (error != null) {
+                            $log.warn('error: ' + error);
+                        }
+                        else {
+                            $log.warn("no error message provided!");
+                        }
+                    }
+                });
         };
 
         /**
