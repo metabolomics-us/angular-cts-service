@@ -12,7 +12,7 @@ angular.module('wohlgemuth.cts', [])
     })
 
  //   .constant('CTSURL', 'http://192.168.59.103/')
-	.constant('CTSURL', 'http://ctstest.fiehnlab.ucdavis.edu')
+	.constant('CTSURL', 'http://cts.fiehnlab.ucdavis.edu')
 
 
     .factory("transformRequestAsFormPost", function () {
