@@ -3,8 +3,7 @@ module.exports = function (grunt) {
 	grunt.initConfig({
 
 		clean: {
-			before: ['service.min.js'],
-			after: ['serviceAnnotated.js']
+			before: ['service.min.js']
 		},
 
 		ngAnnotate: {
@@ -13,7 +12,7 @@ module.exports = function (grunt) {
 					singleQuotes: true
 				},
 				files: {
-					'serviceAnnotated.js' : ['service.js']
+					'service.js' : ['service.js']
 				}
 			}
 		},
@@ -21,7 +20,7 @@ module.exports = function (grunt) {
 		uglify: {
 			dist: {
 				files: {
-					'service.min.js': ['serviceAnnotated.js']
+					'service.min.js': ['service.js']
 				}
 			}
 		}
@@ -31,6 +30,6 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-ng-annotate');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 
-	grunt.registerTask('default', ['clean:before', 'ngAnnotate', 'uglify', 'clean:after']);
+	grunt.registerTask('default', ['clean:before', 'ngAnnotate', 'uglify']);
 
 };

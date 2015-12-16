@@ -6,11 +6,11 @@
 	'use strict';
 
 	angular.module('wohlgemuth.cts', [])
-		.config(function ($httpProvider) {
+		.config(['$httpProvider', function ($httpProvider) {
 			//Enable cross domain calls
 			$httpProvider.defaults.useXDomain = true;
 			delete $httpProvider.defaults.headers.common['X-Requested-With'];
-		})
+		}])
 
 		//.constant('CTSURL', 'http://192.168.59.103/')
 		.constant('CTSURL', 'http://cts.fiehnlab.ucdavis.edu')
@@ -494,6 +494,7 @@
 
 
 	}
+	gwCtsService.$inject = ['$http', 'CTSURL', '$log', 'transformRequestAsFormPost'];
 
 
 	/**
@@ -543,4 +544,5 @@
 			});
 		}
 	}
+	gwChemifyService.$inject = ['$http', 'CTSURL', '$log'];
 })();
