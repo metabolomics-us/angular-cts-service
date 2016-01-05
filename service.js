@@ -260,7 +260,7 @@
 		this.convertSmileToInChICode = function (smiles, callback, errorCallback) {
 			$http({
 					method: "post",
-					url: CTSURL + '/rest/smilesToInchi/',
+                    url: CTSURL + '/service/smiletoinchi/',
 					transformRequest: transformRequestAsFormPost,
 					data: {
 						smiles: smiles.trim()
