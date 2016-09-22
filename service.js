@@ -149,11 +149,12 @@
 		this.convertToInchiKey = function (molecule, callback, errorCallback) {
 			$http({
 					method: "post",
-					url: CTSURL + '/rest/molToInchi/',
+					url: CTSURL + '/service/moltoinchi',
 					transformRequest: transformRequestAsFormPost,
 					data: {
 						mol: molecule
-					}
+					},
+					headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 				}
 			).success(function (data) {
 
@@ -209,7 +210,7 @@
 		 * @param errorCallback
 		 */
 		this.convertInchiKeyToMol = function (inchiKey, callback, errorCallback) {
-			$http.get(CTSURL + '/rest/inchikeytomol/' + inchiKey).then(function (data) {
+			$http.get(CTSURL + '/service/inchikeytomol/' + inchiKey).then(function (data) {
 				if (angular.isDefined(data.data)) {
 
 					data = data.data;
@@ -320,7 +321,7 @@
 		this.convertInChICodeToKey = function (inchiCode, callback, errorCallback) {
 			$http({
 					method: "post",
-					url: CTSURL + '/rest/inchicodetoinchikey/',
+					url: CTSURL + '/service/inchicodetoinchikey/',
 					transformRequest: transformRequestAsFormPost,
 					data: {
 						inchicode: inchiCode
@@ -380,11 +381,12 @@
 		this.convertInChICodeToMol = function (inchiCode, callback, errorCallback) {
 			$http({
 					method: "post",
-					url: CTSURL + '/rest/inchitomol/',
+					url: CTSURL + '/service/inchitomol/',
 					transformRequest: transformRequestAsFormPost,
 					data: {
 						inchicode: inchiCode
-					}
+					},
+					headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 				}
 			).success(function (data) {
 
@@ -510,7 +512,7 @@
 		 */
 		this.nameToInChIKey = function (chemicalName, callback, errorCallback) {
 
-			$http.get(CTSURL + '/rest/chemify/identify/' + encodeURI(chemicalName)).then(function (data) {
+			$http.get(CTSURL + '/chemify/rest/identify/' + encodeURI(chemicalName)).then(function (data) {
 				var result = "";
 
 				if (angular.isDefined(data.data)) {
