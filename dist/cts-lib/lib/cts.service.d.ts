@@ -1,5 +1,5 @@
-import { HttpClient } from "@angular/common/http";
-import { NGXLogger } from "ngx-logger";
+import { HttpClient } from '@angular/common/http';
+import { NGXLogger } from 'ngx-logger';
 import * as i0 from "@angular/core";
 export declare class CtsService {
     private http;
@@ -8,39 +8,24 @@ export declare class CtsService {
     private serializeData;
     /**
      * converts the given Molecule to an InChI Key
-     * @param molecule
-     * @param callback
-     * @param errorCallback
      */
-    convertToInchiKey: (molecule: any) => import("rxjs").Observable<Object>;
+    convertToInchiKey: (molecule: any, callback: any, errorCallback: any) => void;
     /**
      * converts an InChI Key to a molecule
-     * @param inchiKey
-     * @param callback
-     * @param errorCallback
      */
-    convertInchiKeyToMol: (inchiKey: any) => import("rxjs").Observable<Object>;
+    convertInchiKeyToMol: (inchiKey: any, callback: any, errorCallback: any) => void;
     /**
      * utilizes chemspider to convert from a smiles to an inchi
-     * @param smiles
-     * @param callback
-     * @param errorCallback
      */
-    convertSmileToInChICode: (smiles: any) => import("rxjs").Observable<Object>;
+    convertSmileToInChICode: (smiles: any, callback: any, errorCallback: any) => void;
     /**
      * converts an inchi code to an inchi keyß
-     * @param inchiCode
-     * @param callback
-     * @param errorCallback
      */
-    convertInChICodeToKey: (inchiCode: any) => import("rxjs").Observable<Object>;
+    convertInChICodeToKey: (inchiCode: any, callback: any, errorCallback: any) => void;
     /**
      * provides us with the molfile for this key
-     * @param inchiCode
-     * @param callback
-     * @param errorCallback
      */
-    convertInChICodeToMol: (inchiCode: any) => import("rxjs").Observable<Object>;
+    convertInChICodeToMol: (inchiCode: any, callback: any, errorCallback: any) => import("rxjs").Subscription;
     static ɵfac: i0.ɵɵFactoryDef<CtsService, never>;
     static ɵprov: i0.ɵɵInjectableDef<CtsService>;
 }

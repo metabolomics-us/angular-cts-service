@@ -18,7 +18,7 @@
             this.logger = logger;
             this.serializeData = function (data) {
                 if (typeof data !== 'object' && data !== null) {
-                    return ((data == null) ? "" : data.toString());
+                    return ((data == null) ? '' : data.toString());
                 }
                 var buffer = [];
                 for (var name in data) {
@@ -26,249 +26,214 @@
                         continue;
                     }
                     var value = data[name];
-                    buffer.push(encodeURIComponent(name) + "=" + encodeURIComponent((value == null) ? "" : value));
+                    buffer.push(encodeURIComponent(name) + '=' + encodeURIComponent((value == null) ? '' : value));
                 }
-                var source = buffer.join("&").replace(/%20/g, "+");
+                var source = buffer.join('&').replace(/%20/g, '+');
                 return (source);
             };
             /**
              * converts the given Molecule to an InChI Key
-             * @param molecule
-             * @param callback
-             * @param errorCallback
              */
-            this.convertToInchiKey = function (molecule) {
+            this.convertToInchiKey = function (molecule, callback, errorCallback) {
                 var serializedMolecule = _this.serializeData(molecule);
-                return _this.http.post(CtsConstants.apiUrl + "/service/moltoinchi", { mol: serializedMolecule }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } });
-                /*
-                .then((res) => {
-            
-                  this.logger.debug('received: ' + res);
-            
-                  if (res) {
-                    if (res["error"]) {
-                      if (errorCallback) {
-                        errorCallback(res["error"]);
-                      }
-                      else {
-                        this.logger.warn("no error message provided!");
-                      }
+                _this.http.post(CtsConstants.apiUrl + "/service/moltoinchi", { mol: serializedMolecule }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } }).subscribe(function (res) {
+                    _this.logger.debug('received: ' + res);
+                    if (typeof res !== 'undefined') {
+                        if (typeof res.error !== 'undefined') {
+                            if (errorCallback) {
+                                errorCallback(res.error);
+                            }
+                            else {
+                                _this.logger.warn('no error message provided!');
+                            }
+                        }
+                        else if (res.inchikey) {
+                            if (res.inchikey === '') {
+                                callback(null);
+                            }
+                            else {
+                                callback(res);
+                            }
+                        }
+                        else {
+                            _this.logger.debug('no data object is defined!');
+                        }
                     }
-                    else if (res["inchikey"]) {
-                      if (res["inchikey"] === "") {
-                        callback(null);
-                      }
-                      else {
-                        callback(res);
-                      }
-                    }
-            
-                  }
-                  else {
-                    this.logger.debug('no data object is defined!');
-                  }
-                }).catch((error) => {
-                  if (errorCallback) {
-                    errorCallback(error);
-                  }
-                  else {
-                    if (error != null) {
-                      this.logger.warn('error: ' + error);
+                }, function (error) {
+                    if (errorCallback) {
+                        errorCallback(error);
                     }
                     else {
-                      this.logger.warn("no error message provided!");
+                        if (error != null) {
+                            _this.logger.warn('error: ' + error);
+                        }
+                        else {
+                            _this.logger.warn('no error message provided!');
+                        }
                     }
-                  }
-                }); */
+                });
             };
             /**
              * converts an InChI Key to a molecule
-             * @param inchiKey
-             * @param callback
-             * @param errorCallback
              */
-            this.convertInchiKeyToMol = function (inchiKey) {
-                return _this.http.get(CtsConstants.apiUrl + "/service/inchikeytomol/" + inchiKey);
-                /*.subscribe(
-                (res) => {
-                    if (res["data"]) {
-          
-                      let data = res["data"];
-                      if (data.error) {
-                        if (errorCallback) {
-                          errorCallback(data.error);
+            this.convertInchiKeyToMol = function (inchiKey, callback, errorCallback) {
+                _this.http.get(CtsConstants.apiUrl + "/service/inchikeytomol/" + inchiKey).subscribe(function (res) {
+                    if (typeof res !== 'undefined') {
+                        if (typeof res.error !== 'undefined') {
+                            if (errorCallback) {
+                                errorCallback(res.error);
+                            }
+                            else {
+                                _this.logger.warn('no error message provided!');
+                            }
                         }
-                        else {
-                          this.logger.warn("no error message provided!");
+                        else if (res.molecule) {
+                            if (res.molecule === '' || res.molecule === null) {
+                                callback(null);
+                            }
+                            else {
+                                callback(res.molecule);
+                            }
                         }
-                      }
-                      else if (data.molecule) {
-                        if (data.molecule === "" || data.molecule === null) {
-                          callback(null);
-                        }
-                        else {
-                          callback(data.molecule);
-                        }
-                      }
-          
                     }
-                  }).catch((error) => {
+                }, function (error) {
                     if (errorCallback) {
-                      errorCallback(error);
+                        errorCallback(error);
                     }
                     else {
-                      if (error != null) {
-                        this.logger.warn('error: ' + error);
-                      }
-                      else {
-                        this.logger.warn("no error message provided!");
-                      }
+                        if (error != null) {
+                            _this.logger.warn('error: ' + error);
+                        }
+                        else {
+                            _this.logger.warn('no error message provided!');
+                        }
                     }
-                  });*/
+                });
             };
             /**
              * utilizes chemspider to convert from a smiles to an inchi
-             * @param smiles
-             * @param callback
-             * @param errorCallback
              */
-            this.convertSmileToInChICode = function (smiles) {
+            this.convertSmileToInChICode = function (smiles, callback, errorCallback) {
                 var serializedSmiles = _this.serializeData(smiles);
-                return _this.http.post(CtsConstants.apiUrl + "/service/smiletoinchi", { smiles: serializedSmiles.trim() }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } });
-                /*
-                .then((res) => {
-                  if (res) {
-                    if (res["error"]) {
-                      if (errorCallback) {
-                        errorCallback(res["errorr"]);
-                      }
-                      else {
-                        this.logger.warn("no error message provided!");
-                      }
-                    }
-                    else if (res["inchikey"]) {
-                      if (res["inchikey"] === "") {
-                        callback(null);
-                      }
-                      else {
-                        callback(res);
-                      }
-                    }
-          
-                  }
-                  else {
-                    //$log.debug('no data object is defined!');
-                  }
-                }).catch((error) => {
-                  if (errorCallback) {
-                    errorCallback(error);
-                  }
-                  else {
-                    if (error != null) {
-                      this.logger.warn('error: ' + error);
+                _this.http.post(CtsConstants.apiUrl + "/service/smiletoinchi", { smiles: serializedSmiles.trim() }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } }).subscribe(function (res) {
+                    if (typeof res !== 'undefined') {
+                        if (typeof res.error !== 'undefined') {
+                            if (typeof errorCallback !== 'undefined') {
+                                errorCallback(res.error);
+                            }
+                            else {
+                                _this.logger.warn('no error message provided');
+                            }
+                        }
+                        else if (typeof res.inchikey !== 'undefined') {
+                            if (res.inchikey === '') {
+                                callback(null);
+                            }
+                            else {
+                                callback(res);
+                            }
+                        }
                     }
                     else {
-                      this.logger.warn("no error message provided!");
+                        _this.logger.debug('no data object id defined!');
                     }
-                  }
-                }); */
+                }, function (error) {
+                    if (typeof errorCallback !== 'undefined') {
+                        errorCallback(error);
+                    }
+                    else {
+                        if (error != null) {
+                            _this.logger.warn('error: ' + error);
+                        }
+                        else {
+                            _this.logger.warn('no error message provided!');
+                        }
+                    }
+                });
             };
             /**
              * converts an inchi code to an inchi keyß
-             * @param inchiCode
-             * @param callback
-             * @param errorCallback
              */
-            this.convertInChICodeToKey = function (inchiCode) {
+            this.convertInChICodeToKey = function (inchiCode, callback, errorCallback) {
                 var serializedInchiCode = _this.serializeData(inchiCode);
-                return _this.http.post(CtsConstants.apiUrl + "/service/inchicodetoinchikey", { inchicode: serializedInchiCode }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } });
-                /*
-                .then((res) => {
-            
-                  if (res) {
-            
-                    if (res["error"]) {
-                      if (errorCallback) {
-                        errorCallback(res["error"]);
-                      }
-                      else {
-                        this.logger.warn("no error message provided!");
-                      }
-                    }
-                    else if (res["inchikey"]) {
-                      if (res["inchikey"] === "") {
-                        callback(null);
-                      }
-                      else {
-                        callback(res["inchikey"]);
-                      }
-                    }
-            
-                  }
-                  else {
-                    this.logger.debug('no data object is defined!');
-                  }
-                }).catch((error) => {
-                  if (errorCallback) {
-                    errorCallback(error);
-                  }
-                  else {
-                    if (error != null) {
-                      this.logger.warn('error: ' + error);
+                _this.http.post(CtsConstants.apiUrl + "/service/inchicodetoinchikey", { inchicode: serializedInchiCode }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } })
+                    .subscribe(function (res) {
+                    if (typeof res !== 'undefined') {
+                        if (typeof res.error !== 'undefined') {
+                            if (typeof errorCallback !== 'undefined') {
+                                errorCallback(res.error);
+                            }
+                            else {
+                                _this.logger.warn('no error message provided!');
+                            }
+                        }
+                        else if (typeof res.inchikey !== 'undefined') {
+                            if (res.inchikey === '') {
+                                callback(null);
+                            }
+                            else {
+                                callback(res.inchikey);
+                            }
+                        }
                     }
                     else {
-                      this.logger.warn("no error message provided!");
+                        _this.logger.debug('no data object is defined!');
                     }
-                  }
-                }); */
+                }, function (error) {
+                    if (typeof errorCallback !== 'undefined') {
+                        errorCallback(error);
+                    }
+                    else {
+                        if (error !== null) {
+                            _this.logger.warn('error: ' + error);
+                        }
+                        else {
+                            _this.logger.warn('no error message provided!');
+                        }
+                    }
+                });
             };
             /**
              * provides us with the molfile for this key
-             * @param inchiCode
-             * @param callback
-             * @param errorCallback
              */
-            this.convertInChICodeToMol = function (inchiCode) {
+            this.convertInChICodeToMol = function (inchiCode, callback, errorCallback) {
                 var serializedInchiCode = _this.serializeData(inchiCode);
-                return _this.http.post(CtsConstants.apiUrl + "/service/inchitomol", { inchicode: serializedInchiCode }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } });
-                /*
-                  .then((res) => {
-                    if (res) {
-            
-                      if (res["error"]) {
-                        if (errorCallback) {
-                          errorCallback(res["error"]);
+                return _this.http.post(CtsConstants.apiUrl + "/service/inchitomol", { inchicode: serializedInchiCode }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } })
+                    .subscribe(function (res) {
+                    if (typeof res !== 'undefined') {
+                        if (typeof res.error !== 'undefined') {
+                            if (typeof errorCallback !== 'undefined') {
+                                errorCallback(res.error);
+                            }
+                            else {
+                                _this.logger.warn('no error message provided!');
+                            }
                         }
-                        else {
-                          this.logger.warn("no error message provided!");
+                        else if (typeof res.molecule !== 'undefined') {
+                            if (res.molecule === '') {
+                                callback(null);
+                            }
+                            else {
+                                callback(res.molecule);
+                            }
                         }
-                      }
-                      else if (res["molecule"]) {
-                        if (res["molecule"] === "") {
-                          callback(null);
-                        }
-                        else {
-                          callback(res["molecule"]);
-                        }
-                      }
-            
                     }
                     else {
-                      this.logger.debug('no data object is defined!');
+                        _this.logger.debug('no data object is defined!');
                     }
-                  }).catch((error) => {
-                    if (errorCallback) {
-                      errorCallback(error);
+                }, function (error) {
+                    if (typeof errorCallback !== 'undefined') {
+                        errorCallback(error);
                     }
                     else {
-                      if (error != null) {
-                        this.logger.warn('error: ' + error);
-                      }
-                      else {
-                        this.logger.warn("no error message provided!");
-                      }
+                        if (error != null) {
+                            _this.logger.warn('error: ' + error);
+                        }
+                        else {
+                            _this.logger.warn('no error message provided!');
+                        }
                     }
-                  }); */
+                });
             };
         }
         return CtsService;
@@ -299,45 +264,40 @@
             this.logger = logger;
             /**
              * converts the given name to an InChI Key
-             * @param chemicalName
-             * @param callback
              */
-            this.nameToInChIKey = function (chemicalName) {
-                return _this.http.get(CtsConstants.apiUrl + "/chemify/rest/identify/" + encodeURI(chemicalName));
-                /*
-                  .then((res) => {
-                    let result = "";
-            
-                    if (res["data"]) {
-                      let data = res["data"];
-                      if (Array.isArray(data)) {
-                        if (data.length > 0) {
-                          let topHit = data[0];
-                          if (topHit.result) {
-                            if (topHit.result === 'nothing found') {
-                              callback(null);
+            this.nameToInChIKey = function (chemicalName, callback, errorCallback) {
+                _this.http.get(CtsConstants.apiUrl + "/chemify/rest/identify/" + encodeURI(chemicalName))
+                    .subscribe(function (res) {
+                    var result = '';
+                    if (typeof res !== 'undefined') {
+                        var data = res;
+                        if (Array.isArray(data)) {
+                            if (data.length > 0) {
+                                var topHit = data[0];
+                                if (typeof topHit.result !== 'undefined') {
+                                    if (topHit.result === 'nothing found') {
+                                        callback(null);
+                                    }
+                                    else {
+                                        callback(topHit.result);
+                                    }
+                                }
                             }
-                            else {
-                              callback(topHit.result);
-                            }
-                          }
                         }
-                      }
                     }
-                  }).catch((error) =>{
+                }, function (error) {
                     if (errorCallback) {
-                      errorCallback(error);
+                        errorCallback(error);
                     }
                     else {
-                      if (error != null) {
-                        this.logger.warn('error: ' + error);
-                      }
-                      else {
-                        this.logger.warn("no error message provided!");
-                      }
+                        if (error != null) {
+                            _this.logger.warn('error: ' + error);
+                        }
+                        else {
+                            _this.logger.warn('no error message provided!');
+                        }
                     }
-                  });
-                 */
+                });
             };
         }
         return ChemifyService;

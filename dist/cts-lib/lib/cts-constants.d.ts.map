@@ -1,1 +1,1 @@
-{"version":3,"file":"cts-constants.d.ts","sourceRoot":"/home/nolan/Development/angular-cts-service/angular-cts-service/projects/cts-lib/src/","sources":["lib/cts-constants.ts"],"names":[],"mappings":"AAAA,qBAAa,YAAY;IACvB,OAAc,MAAM,EAAE,MAAM,CAAqC;CAClE"}
+{"version":3,"file":"cts-constants.d.ts","sourceRoot":"/home/nolan/Development/mona-services/angular-cts-service/projects/cts-lib/src/","sources":["lib/cts-constants.ts"],"names":[],"mappings":"AAAA,qBAAa,YAAY;IACvB,OAAc,MAAM,EAAE,MAAM,CAAqC;CAClE"}

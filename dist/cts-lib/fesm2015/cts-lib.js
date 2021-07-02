@@ -12,257 +12,222 @@ class CtsService {
         this.logger = logger;
         this.serializeData = (data) => {
             if (typeof data !== 'object' && data !== null) {
-                return ((data == null) ? "" : data.toString());
+                return ((data == null) ? '' : data.toString());
             }
-            let buffer = [];
-            for (let name in data) {
+            const buffer = [];
+            for (const name in data) {
                 if (!data.hasOwnProperty(name)) {
                     continue;
                 }
-                let value = data[name];
-                buffer.push(encodeURIComponent(name) + "=" + encodeURIComponent((value == null) ? "" : value));
+                const value = data[name];
+                buffer.push(encodeURIComponent(name) + '=' + encodeURIComponent((value == null) ? '' : value));
             }
-            let source = buffer.join("&").replace(/%20/g, "+");
+            const source = buffer.join('&').replace(/%20/g, '+');
             return (source);
         };
         /**
          * converts the given Molecule to an InChI Key
-         * @param molecule
-         * @param callback
-         * @param errorCallback
          */
-        this.convertToInchiKey = (molecule) => {
-            let serializedMolecule = this.serializeData(molecule);
-            return this.http.post(`${CtsConstants.apiUrl}/service/moltoinchi`, { mol: serializedMolecule }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } });
-            /*
-            .then((res) => {
-        
-              this.logger.debug('received: ' + res);
-        
-              if (res) {
-                if (res["error"]) {
-                  if (errorCallback) {
-                    errorCallback(res["error"]);
-                  }
-                  else {
-                    this.logger.warn("no error message provided!");
-                  }
+        this.convertToInchiKey = (molecule, callback, errorCallback) => {
+            const serializedMolecule = this.serializeData(molecule);
+            this.http.post(`${CtsConstants.apiUrl}/service/moltoinchi`, { mol: serializedMolecule }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } }).subscribe((res) => {
+                this.logger.debug('received: ' + res);
+                if (typeof res !== 'undefined') {
+                    if (typeof res.error !== 'undefined') {
+                        if (errorCallback) {
+                            errorCallback(res.error);
+                        }
+                        else {
+                            this.logger.warn('no error message provided!');
+                        }
+                    }
+                    else if (res.inchikey) {
+                        if (res.inchikey === '') {
+                            callback(null);
+                        }
+                        else {
+                            callback(res);
+                        }
+                    }
+                    else {
+                        this.logger.debug('no data object is defined!');
+                    }
                 }
-                else if (res["inchikey"]) {
-                  if (res["inchikey"] === "") {
-                    callback(null);
-                  }
-                  else {
-                    callback(res);
-                  }
-                }
-        
-              }
-              else {
-                this.logger.debug('no data object is defined!');
-              }
-            }).catch((error) => {
-              if (errorCallback) {
-                errorCallback(error);
-              }
-              else {
-                if (error != null) {
-                  this.logger.warn('error: ' + error);
+            }, (error) => {
+                if (errorCallback) {
+                    errorCallback(error);
                 }
                 else {
-                  this.logger.warn("no error message provided!");
+                    if (error != null) {
+                        this.logger.warn('error: ' + error);
+                    }
+                    else {
+                        this.logger.warn('no error message provided!');
+                    }
                 }
-              }
-            }); */
+            });
         };
         /**
          * converts an InChI Key to a molecule
-         * @param inchiKey
-         * @param callback
-         * @param errorCallback
          */
-        this.convertInchiKeyToMol = (inchiKey) => {
-            return this.http.get(`${CtsConstants.apiUrl}/service/inchikeytomol/${inchiKey}`);
-            /*.subscribe(
-            (res) => {
-                if (res["data"]) {
-      
-                  let data = res["data"];
-                  if (data.error) {
-                    if (errorCallback) {
-                      errorCallback(data.error);
+        this.convertInchiKeyToMol = (inchiKey, callback, errorCallback) => {
+            this.http.get(`${CtsConstants.apiUrl}/service/inchikeytomol/${inchiKey}`).subscribe((res) => {
+                if (typeof res !== 'undefined') {
+                    if (typeof res.error !== 'undefined') {
+                        if (errorCallback) {
+                            errorCallback(res.error);
+                        }
+                        else {
+                            this.logger.warn('no error message provided!');
+                        }
                     }
-                    else {
-                      this.logger.warn("no error message provided!");
+                    else if (res.molecule) {
+                        if (res.molecule === '' || res.molecule === null) {
+                            callback(null);
+                        }
+                        else {
+                            callback(res.molecule);
+                        }
                     }
-                  }
-                  else if (data.molecule) {
-                    if (data.molecule === "" || data.molecule === null) {
-                      callback(null);
-                    }
-                    else {
-                      callback(data.molecule);
-                    }
-                  }
-      
                 }
-              }).catch((error) => {
+            }, (error) => {
                 if (errorCallback) {
-                  errorCallback(error);
+                    errorCallback(error);
                 }
                 else {
-                  if (error != null) {
-                    this.logger.warn('error: ' + error);
-                  }
-                  else {
-                    this.logger.warn("no error message provided!");
-                  }
+                    if (error != null) {
+                        this.logger.warn('error: ' + error);
+                    }
+                    else {
+                        this.logger.warn('no error message provided!');
+                    }
                 }
-              });*/
+            });
         };
         /**
          * utilizes chemspider to convert from a smiles to an inchi
-         * @param smiles
-         * @param callback
-         * @param errorCallback
          */
-        this.convertSmileToInChICode = (smiles) => {
-            let serializedSmiles = this.serializeData(smiles);
-            return this.http.post(`${CtsConstants.apiUrl}/service/smiletoinchi`, { smiles: serializedSmiles.trim() }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } });
-            /*
-            .then((res) => {
-              if (res) {
-                if (res["error"]) {
-                  if (errorCallback) {
-                    errorCallback(res["errorr"]);
-                  }
-                  else {
-                    this.logger.warn("no error message provided!");
-                  }
-                }
-                else if (res["inchikey"]) {
-                  if (res["inchikey"] === "") {
-                    callback(null);
-                  }
-                  else {
-                    callback(res);
-                  }
-                }
-      
-              }
-              else {
-                //$log.debug('no data object is defined!');
-              }
-            }).catch((error) => {
-              if (errorCallback) {
-                errorCallback(error);
-              }
-              else {
-                if (error != null) {
-                  this.logger.warn('error: ' + error);
+        this.convertSmileToInChICode = (smiles, callback, errorCallback) => {
+            const serializedSmiles = this.serializeData(smiles);
+            this.http.post(`${CtsConstants.apiUrl}/service/smiletoinchi`, { smiles: serializedSmiles.trim() }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } }).subscribe((res) => {
+                if (typeof res !== 'undefined') {
+                    if (typeof res.error !== 'undefined') {
+                        if (typeof errorCallback !== 'undefined') {
+                            errorCallback(res.error);
+                        }
+                        else {
+                            this.logger.warn('no error message provided');
+                        }
+                    }
+                    else if (typeof res.inchikey !== 'undefined') {
+                        if (res.inchikey === '') {
+                            callback(null);
+                        }
+                        else {
+                            callback(res);
+                        }
+                    }
                 }
                 else {
-                  this.logger.warn("no error message provided!");
+                    this.logger.debug('no data object id defined!');
                 }
-              }
-            }); */
+            }, (error) => {
+                if (typeof errorCallback !== 'undefined') {
+                    errorCallback(error);
+                }
+                else {
+                    if (error != null) {
+                        this.logger.warn('error: ' + error);
+                    }
+                    else {
+                        this.logger.warn('no error message provided!');
+                    }
+                }
+            });
         };
         /**
          * converts an inchi code to an inchi keyß
-         * @param inchiCode
-         * @param callback
-         * @param errorCallback
          */
-        this.convertInChICodeToKey = (inchiCode) => {
-            let serializedInchiCode = this.serializeData(inchiCode);
-            return this.http.post(`${CtsConstants.apiUrl}/service/inchicodetoinchikey`, { inchicode: serializedInchiCode }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } });
-            /*
-            .then((res) => {
-        
-              if (res) {
-        
-                if (res["error"]) {
-                  if (errorCallback) {
-                    errorCallback(res["error"]);
-                  }
-                  else {
-                    this.logger.warn("no error message provided!");
-                  }
-                }
-                else if (res["inchikey"]) {
-                  if (res["inchikey"] === "") {
-                    callback(null);
-                  }
-                  else {
-                    callback(res["inchikey"]);
-                  }
-                }
-        
-              }
-              else {
-                this.logger.debug('no data object is defined!');
-              }
-            }).catch((error) => {
-              if (errorCallback) {
-                errorCallback(error);
-              }
-              else {
-                if (error != null) {
-                  this.logger.warn('error: ' + error);
+        this.convertInChICodeToKey = (inchiCode, callback, errorCallback) => {
+            const serializedInchiCode = this.serializeData(inchiCode);
+            this.http.post(`${CtsConstants.apiUrl}/service/inchicodetoinchikey`, { inchicode: serializedInchiCode }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } })
+                .subscribe((res) => {
+                if (typeof res !== 'undefined') {
+                    if (typeof res.error !== 'undefined') {
+                        if (typeof errorCallback !== 'undefined') {
+                            errorCallback(res.error);
+                        }
+                        else {
+                            this.logger.warn('no error message provided!');
+                        }
+                    }
+                    else if (typeof res.inchikey !== 'undefined') {
+                        if (res.inchikey === '') {
+                            callback(null);
+                        }
+                        else {
+                            callback(res.inchikey);
+                        }
+                    }
                 }
                 else {
-                  this.logger.warn("no error message provided!");
+                    this.logger.debug('no data object is defined!');
                 }
-              }
-            }); */
+            }, (error) => {
+                if (typeof errorCallback !== 'undefined') {
+                    errorCallback(error);
+                }
+                else {
+                    if (error !== null) {
+                        this.logger.warn('error: ' + error);
+                    }
+                    else {
+                        this.logger.warn('no error message provided!');
+                    }
+                }
+            });
         };
         /**
          * provides us with the molfile for this key
-         * @param inchiCode
-         * @param callback
-         * @param errorCallback
          */
-        this.convertInChICodeToMol = (inchiCode) => {
-            let serializedInchiCode = this.serializeData(inchiCode);
-            return this.http.post(`${CtsConstants.apiUrl}/service/inchitomol`, { inchicode: serializedInchiCode }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } });
-            /*
-              .then((res) => {
-                if (res) {
-        
-                  if (res["error"]) {
-                    if (errorCallback) {
-                      errorCallback(res["error"]);
+        this.convertInChICodeToMol = (inchiCode, callback, errorCallback) => {
+            const serializedInchiCode = this.serializeData(inchiCode);
+            return this.http.post(`${CtsConstants.apiUrl}/service/inchitomol`, { inchicode: serializedInchiCode }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } })
+                .subscribe((res) => {
+                if (typeof res !== 'undefined') {
+                    if (typeof res.error !== 'undefined') {
+                        if (typeof errorCallback !== 'undefined') {
+                            errorCallback(res.error);
+                        }
+                        else {
+                            this.logger.warn('no error message provided!');
+                        }
                     }
-                    else {
-                      this.logger.warn("no error message provided!");
+                    else if (typeof res.molecule !== 'undefined') {
+                        if (res.molecule === '') {
+                            callback(null);
+                        }
+                        else {
+                            callback(res.molecule);
+                        }
                     }
-                  }
-                  else if (res["molecule"]) {
-                    if (res["molecule"] === "") {
-                      callback(null);
-                    }
-                    else {
-                      callback(res["molecule"]);
-                    }
-                  }
-        
                 }
                 else {
-                  this.logger.debug('no data object is defined!');
+                    this.logger.debug('no data object is defined!');
                 }
-              }).catch((error) => {
-                if (errorCallback) {
-                  errorCallback(error);
+            }, (error) => {
+                if (typeof errorCallback !== 'undefined') {
+                    errorCallback(error);
                 }
                 else {
-                  if (error != null) {
-                    this.logger.warn('error: ' + error);
-                  }
-                  else {
-                    this.logger.warn("no error message provided!");
-                  }
+                    if (error != null) {
+                        this.logger.warn('error: ' + error);
+                    }
+                    else {
+                        this.logger.warn('no error message provided!');
+                    }
                 }
-              }); */
+            });
         };
     }
 }
@@ -287,45 +252,40 @@ class ChemifyService {
         this.logger = logger;
         /**
          * converts the given name to an InChI Key
-         * @param chemicalName
-         * @param callback
          */
-        this.nameToInChIKey = (chemicalName) => {
-            return this.http.get(`${CtsConstants.apiUrl}/chemify/rest/identify/${encodeURI(chemicalName)}`);
-            /*
-              .then((res) => {
-                let result = "";
-        
-                if (res["data"]) {
-                  let data = res["data"];
-                  if (Array.isArray(data)) {
-                    if (data.length > 0) {
-                      let topHit = data[0];
-                      if (topHit.result) {
-                        if (topHit.result === 'nothing found') {
-                          callback(null);
+        this.nameToInChIKey = (chemicalName, callback, errorCallback) => {
+            this.http.get(`${CtsConstants.apiUrl}/chemify/rest/identify/${encodeURI(chemicalName)}`)
+                .subscribe((res) => {
+                const result = '';
+                if (typeof res !== 'undefined') {
+                    const data = res;
+                    if (Array.isArray(data)) {
+                        if (data.length > 0) {
+                            const topHit = data[0];
+                            if (typeof topHit.result !== 'undefined') {
+                                if (topHit.result === 'nothing found') {
+                                    callback(null);
+                                }
+                                else {
+                                    callback(topHit.result);
+                                }
+                            }
                         }
-                        else {
-                          callback(topHit.result);
-                        }
-                      }
                     }
-                  }
                 }
-              }).catch((error) =>{
+            }, (error) => {
                 if (errorCallback) {
-                  errorCallback(error);
+                    errorCallback(error);
                 }
                 else {
-                  if (error != null) {
-                    this.logger.warn('error: ' + error);
-                  }
-                  else {
-                    this.logger.warn("no error message provided!");
-                  }
+                    if (error != null) {
+                        this.logger.warn('error: ' + error);
+                    }
+                    else {
+                        this.logger.warn('no error message provided!');
+                    }
                 }
-              });
-             */
+            });
         };
     }
 }

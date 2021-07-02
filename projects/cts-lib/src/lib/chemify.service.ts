@@ -1,7 +1,7 @@
 import {Inject, Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {NGXLogger} from "ngx-logger";
-import {CtsConstants} from "./cts-constants";
+import {HttpClient} from '@angular/common/http';
+import {NGXLogger} from 'ngx-logger';
+import {CtsConstants} from './cts-constants';
 
 @Injectable({
   providedIn: 'root'
@@ -12,22 +12,19 @@ export class ChemifyService{
 
   /**
    * converts the given name to an InChI Key
-   * @param chemicalName
-   * @param callback
    */
-  nameToInChIKey = (chemicalName) => {
+  nameToInChIKey = (chemicalName, callback, errorCallback) => {
 
-    return this.http.get(`${CtsConstants.apiUrl}/chemify/rest/identify/${encodeURI(chemicalName)}`);
-    /*
-      .then((res) => {
-        let result = "";
+    this.http.get(`${CtsConstants.apiUrl}/chemify/rest/identify/${encodeURI(chemicalName)}`)
+      .subscribe((res) => {
+        const result = '';
 
-        if (res["data"]) {
-          let data = res["data"];
+        if (typeof res !== 'undefined') {
+          const data = res;
           if (Array.isArray(data)) {
             if (data.length > 0) {
-              let topHit = data[0];
-              if (topHit.result) {
+              const topHit = data[0];
+              if (typeof topHit.result !== 'undefined') {
                 if (topHit.result === 'nothing found') {
                   callback(null);
                 }
@@ -38,19 +35,18 @@ export class ChemifyService{
             }
           }
         }
-      }).catch((error) =>{
-        if (errorCallback) {
-          errorCallback(error);
+      }, (error) => {
+      if (errorCallback) {
+        errorCallback(error);
+      }
+      else {
+        if (error != null) {
+          this.logger.warn('error: ' + error);
         }
         else {
-          if (error != null) {
-            this.logger.warn('error: ' + error);
-          }
-          else {
-            this.logger.warn("no error message provided!");
-          }
+          this.logger.warn('no error message provided!');
         }
+      }
       });
-     */
   }
 }
