@@ -81,7 +81,7 @@ export class CtsService {
   convertInchiKeyToMol = (inchiKey, callback, errorCallback) => {
     this.http.get(`${CtsConstants.apiUrl}/service/inchikeytomol/${inchiKey}`).subscribe((res: any) => {
       if (typeof res !== 'undefined') {
-        if (typeof res.error !== 'undefined') {
+        if (res.error !== '') {
           if (errorCallback) {
             errorCallback(res.error);
           }
