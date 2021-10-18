@@ -79,7 +79,7 @@
             this.convertInchiKeyToMol = function (inchiKey, callback, errorCallback) {
                 _this.http.get(CtsConstants.apiUrl + "/service/inchikeytomol/" + inchiKey).subscribe(function (res) {
                     if (typeof res !== 'undefined') {
-                        if (typeof res.error !== 'undefined') {
+                        if (res.error !== '') {
                             if (errorCallback) {
                                 errorCallback(res.error);
                             }
