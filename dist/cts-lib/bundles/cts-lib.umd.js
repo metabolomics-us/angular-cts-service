@@ -9,7 +9,7 @@
         }
         return CtsConstants;
     }());
-    CtsConstants.apiUrl = "http://cts.fiehnlab.ucdavis.edu";
+    CtsConstants.apiUrl = 'https://cts.fiehnlab.ucdavis.edu';
 
     var CtsService = /** @class */ (function () {
         function CtsService(http, logger) {

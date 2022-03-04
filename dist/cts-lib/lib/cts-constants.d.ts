@@ -1,4 +1,4 @@
 export declare class CtsConstants {
-    static apiUrl: String;
+    static apiUrl: string;
 }
 //# sourceMappingURL=cts-constants.d.ts.map
