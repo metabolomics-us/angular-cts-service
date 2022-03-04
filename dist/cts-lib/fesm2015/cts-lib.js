@@ -4,7 +4,7 @@ import { NGXLogger, LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 
 class CtsConstants {
 }
-CtsConstants.apiUrl = "http://cts.fiehnlab.ucdavis.edu";
+CtsConstants.apiUrl = 'https://cts.fiehnlab.ucdavis.edu';
 
 class CtsService {
     constructor(http, logger) {
