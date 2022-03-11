@@ -1,4 +1,4 @@
-import {Inject, Injectable} from '@angular/core';
+import {Inject, Injectable, Optional} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {NGXLogger} from 'ngx-logger';
 import {CtsConstants} from './cts-constants';
@@ -7,8 +7,12 @@ import {CtsConstants} from './cts-constants';
   providedIn: 'root'
 })
 export class CtsService {
+  private apiUrl = '';
 
-  constructor(@Inject(HttpClient) private http: HttpClient, @Inject(NGXLogger) private logger: NGXLogger) { }
+  constructor(@Inject(HttpClient) private http: HttpClient, @Inject(NGXLogger) private logger: NGXLogger,
+              @Optional() config?: CtsConstants) {
+    if (config) { this.apiUrl = config.apiUrl; }
+  }
 
   private serializeData = (data) => {
     if (typeof data !== 'object' && data !== null) {
@@ -36,7 +40,7 @@ export class CtsService {
    */
   convertToInchiKey =  (molecule, callback, errorCallback) => {
     const serializedMolecule = this.serializeData(molecule);
-    this.http.post(`${CtsConstants.apiUrl}/service/moltoinchi`, {mol: serializedMolecule},
+    this.http.post(`${this.apiUrl}/service/moltoinchi`, {mol: serializedMolecule},
       {headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'}}).subscribe((res: any) => {
       this.logger.debug('received: ' + res);
       if (typeof res !== 'undefined') {
@@ -79,7 +83,7 @@ export class CtsService {
    * converts an InChI Key to a molecule
    */
   convertInchiKeyToMol = (inchiKey, callback, errorCallback) => {
-    this.http.get(`${CtsConstants.apiUrl}/service/inchikeytomol/${inchiKey}`).subscribe((res: any) => {
+    this.http.get(`${this.apiUrl}/service/inchikeytomol/${inchiKey}`).subscribe((res: any) => {
       if (typeof res !== 'undefined') {
         if (res.error !== '') {
           if (errorCallback) {
@@ -119,7 +123,7 @@ export class CtsService {
    */
   convertSmileToInChICode =  (smiles, callback, errorCallback) => {
     const serializedSmiles = this.serializeData(smiles);
-    this.http.post(`${CtsConstants.apiUrl}/service/smiletoinchi`, {smiles: serializedSmiles.trim()},
+    this.http.post(`${this.apiUrl}/service/smiletoinchi`, {smiles: serializedSmiles.trim()},
       {headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'}}).subscribe((res: any) => {
         if (typeof res !== 'undefined') {
           if (typeof res.error !== 'undefined') {
@@ -162,7 +166,7 @@ export class CtsService {
    */
   convertInChICodeToKey = (inchiCode, callback, errorCallback) => {
     const serializedInchiCode = this.serializeData(inchiCode);
-    this.http.post(`${CtsConstants.apiUrl}/service/inchicodetoinchikey`, {inchicode: serializedInchiCode},
+    this.http.post(`${this.apiUrl}/service/inchicodetoinchikey`, {inchicode: serializedInchiCode},
       {headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'}})
     .subscribe((res: any) => {
 
@@ -208,7 +212,7 @@ export class CtsService {
    */
   convertInChICodeToMol = (inchiCode, callback, errorCallback) => {
     const serializedInchiCode = this.serializeData(inchiCode);
-    return this.http.post(`${CtsConstants.apiUrl}/service/inchitomol`, { inchicode: serializedInchiCode },
+    return this.http.post(`${this.apiUrl}/service/inchitomol`, { inchicode: serializedInchiCode },
       {headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'}})
       .subscribe((res: any) => {
         if (typeof res !== 'undefined') {

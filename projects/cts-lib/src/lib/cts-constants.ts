@@ -1,3 +1,3 @@
 export class CtsConstants{
-  public static apiUrl = 'https://cts.fiehnlab.ucdavis.edu';
+  public apiUrl = 'https://cts.fiehnlab.ucdavis.edu';
 }
