@@ -1,4 +1,4 @@
-import {Inject, Injectable} from '@angular/core';
+import {Inject, Injectable, Optional} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {NGXLogger} from 'ngx-logger';
 import {CtsConstants} from './cts-constants';
@@ -7,7 +7,10 @@ import {CtsConstants} from './cts-constants';
   providedIn: 'root'
 })
 export class ChemifyService{
-  constructor(@Inject(HttpClient) private http: HttpClient, @Inject(NGXLogger) private logger: NGXLogger) {
+  private apiUrl = '';
+  constructor(@Inject(HttpClient) private http: HttpClient, @Inject(NGXLogger) private logger: NGXLogger,
+              @Optional() config?: CtsConstants) {
+    if (config) { this.apiUrl = config.apiUrl; }
   }
 
   /**
@@ -15,7 +18,7 @@ export class ChemifyService{
    */
   nameToInChIKey = (chemicalName, callback, errorCallback) => {
 
-    this.http.get(`${CtsConstants.apiUrl}/chemify/rest/identify/${encodeURI(chemicalName)}`)
+    this.http.get(`${this.apiUrl}/chemify/rest/identify/${encodeURI(chemicalName)}`)
       .subscribe((res) => {
         const result = '';
 

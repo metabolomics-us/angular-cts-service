@@ -1,21 +1,22 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/common/http'), require('ngx-logger')) :
     typeof define === 'function' && define.amd ? define('cts-lib', ['exports', '@angular/core', '@angular/common/http', 'ngx-logger'], factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global['cts-lib'] = {}, global.ng.core, global.ng.common.http, global.i2));
-}(this, (function (exports, i0, i1, i2) { 'use strict';
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global['cts-lib'] = {}, global.ng.core, global.ng.common.http, global.i3));
+}(this, (function (exports, i0, i2, i3) { 'use strict';
 
     var CtsConstants = /** @class */ (function () {
         function CtsConstants() {
+            this.apiUrl = 'https://cts.fiehnlab.ucdavis.edu';
         }
         return CtsConstants;
     }());
-    CtsConstants.apiUrl = 'https://cts.fiehnlab.ucdavis.edu';
 
     var CtsService = /** @class */ (function () {
-        function CtsService(http, logger) {
+        function CtsService(http, logger, config) {
             var _this = this;
             this.http = http;
             this.logger = logger;
+            this.apiUrl = '';
             this.serializeData = function (data) {
                 if (typeof data !== 'object' && data !== null) {
                     return ((data == null) ? '' : data.toString());
@@ -36,7 +37,7 @@
              */
             this.convertToInchiKey = function (molecule, callback, errorCallback) {
                 var serializedMolecule = _this.serializeData(molecule);
-                _this.http.post(CtsConstants.apiUrl + "/service/moltoinchi", { mol: serializedMolecule }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } }).subscribe(function (res) {
+                _this.http.post(_this.apiUrl + "/service/moltoinchi", { mol: serializedMolecule }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } }).subscribe(function (res) {
                     _this.logger.debug('received: ' + res);
                     if (typeof res !== 'undefined') {
                         if (typeof res.error !== 'undefined') {
@@ -77,7 +78,7 @@
              * converts an InChI Key to a molecule
              */
             this.convertInchiKeyToMol = function (inchiKey, callback, errorCallback) {
-                _this.http.get(CtsConstants.apiUrl + "/service/inchikeytomol/" + inchiKey).subscribe(function (res) {
+                _this.http.get(_this.apiUrl + "/service/inchikeytomol/" + inchiKey).subscribe(function (res) {
                     if (typeof res !== 'undefined') {
                         if (res.error !== '') {
                             if (errorCallback) {
@@ -115,7 +116,7 @@
              */
             this.convertSmileToInChICode = function (smiles, callback, errorCallback) {
                 var serializedSmiles = _this.serializeData(smiles);
-                _this.http.post(CtsConstants.apiUrl + "/service/smiletoinchi", { smiles: serializedSmiles.trim() }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } }).subscribe(function (res) {
+                _this.http.post(_this.apiUrl + "/service/smiletoinchi", { smiles: serializedSmiles.trim() }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } }).subscribe(function (res) {
                     if (typeof res !== 'undefined') {
                         if (typeof res.error !== 'undefined') {
                             if (typeof errorCallback !== 'undefined') {
@@ -156,7 +157,7 @@
              */
             this.convertInChICodeToKey = function (inchiCode, callback, errorCallback) {
                 var serializedInchiCode = _this.serializeData(inchiCode);
-                _this.http.post(CtsConstants.apiUrl + "/service/inchicodetoinchikey", { inchicode: serializedInchiCode }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } })
+                _this.http.post(_this.apiUrl + "/service/inchicodetoinchikey", { inchicode: serializedInchiCode }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } })
                     .subscribe(function (res) {
                     if (typeof res !== 'undefined') {
                         if (typeof res.error !== 'undefined') {
@@ -198,7 +199,7 @@
              */
             this.convertInChICodeToMol = function (inchiCode, callback, errorCallback) {
                 var serializedInchiCode = _this.serializeData(inchiCode);
-                return _this.http.post(CtsConstants.apiUrl + "/service/inchitomol", { inchicode: serializedInchiCode }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } })
+                return _this.http.post(_this.apiUrl + "/service/inchitomol", { inchicode: serializedInchiCode }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } })
                     .subscribe(function (res) {
                     if (typeof res !== 'undefined') {
                         if (typeof res.error !== 'undefined') {
@@ -235,10 +236,13 @@
                     }
                 });
             };
+            if (config) {
+                this.apiUrl = config.apiUrl;
+            }
         }
         return CtsService;
     }());
-    CtsService.ɵfac = function CtsService_Factory(t) { return new (t || CtsService)(i0.ɵɵinject(i1.HttpClient), i0.ɵɵinject(i2.NGXLogger)); };
+    CtsService.ɵfac = function CtsService_Factory(t) { return new (t || CtsService)(i0.ɵɵinject(i2.HttpClient), i0.ɵɵinject(i3.NGXLogger), i0.ɵɵinject(CtsConstants, 8)); };
     CtsService.ɵprov = i0.ɵɵdefineInjectable({ token: CtsService, factory: CtsService.ɵfac, providedIn: 'root' });
     /*@__PURE__*/ (function () {
         i0.ɵsetClassMetadata(CtsService, [{
@@ -247,26 +251,29 @@
                         providedIn: 'root'
                     }]
             }], function () {
-            return [{ type: i1.HttpClient, decorators: [{
+            return [{ type: i2.HttpClient, decorators: [{
                             type: i0.Inject,
-                            args: [i1.HttpClient]
-                        }] }, { type: i2.NGXLogger, decorators: [{
+                            args: [i2.HttpClient]
+                        }] }, { type: i3.NGXLogger, decorators: [{
                             type: i0.Inject,
-                            args: [i2.NGXLogger]
+                            args: [i3.NGXLogger]
+                        }] }, { type: CtsConstants, decorators: [{
+                            type: i0.Optional
                         }] }];
         }, null);
     })();
 
     var ChemifyService = /** @class */ (function () {
-        function ChemifyService(http, logger) {
+        function ChemifyService(http, logger, config) {
             var _this = this;
             this.http = http;
             this.logger = logger;
+            this.apiUrl = '';
             /**
              * converts the given name to an InChI Key
              */
             this.nameToInChIKey = function (chemicalName, callback, errorCallback) {
-                _this.http.get(CtsConstants.apiUrl + "/chemify/rest/identify/" + encodeURI(chemicalName))
+                _this.http.get(_this.apiUrl + "/chemify/rest/identify/" + encodeURI(chemicalName))
                     .subscribe(function (res) {
                     var result = '';
                     if (typeof res !== 'undefined') {
@@ -299,10 +306,13 @@
                     }
                 });
             };
+            if (config) {
+                this.apiUrl = config.apiUrl;
+            }
         }
         return ChemifyService;
     }());
-    ChemifyService.ɵfac = function ChemifyService_Factory(t) { return new (t || ChemifyService)(i0.ɵɵinject(i1.HttpClient), i0.ɵɵinject(i2.NGXLogger)); };
+    ChemifyService.ɵfac = function ChemifyService_Factory(t) { return new (t || ChemifyService)(i0.ɵɵinject(i2.HttpClient), i0.ɵɵinject(i3.NGXLogger), i0.ɵɵinject(CtsConstants, 8)); };
     ChemifyService.ɵprov = i0.ɵɵdefineInjectable({ token: ChemifyService, factory: ChemifyService.ɵfac, providedIn: 'root' });
     /*@__PURE__*/ (function () {
         i0.ɵsetClassMetadata(ChemifyService, [{
@@ -311,44 +321,57 @@
                         providedIn: 'root'
                     }]
             }], function () {
-            return [{ type: i1.HttpClient, decorators: [{
+            return [{ type: i2.HttpClient, decorators: [{
                             type: i0.Inject,
-                            args: [i1.HttpClient]
-                        }] }, { type: i2.NGXLogger, decorators: [{
+                            args: [i2.HttpClient]
+                        }] }, { type: i3.NGXLogger, decorators: [{
                             type: i0.Inject,
-                            args: [i2.NGXLogger]
+                            args: [i3.NGXLogger]
+                        }] }, { type: CtsConstants, decorators: [{
+                            type: i0.Optional
                         }] }];
         }, null);
     })();
 
     var CtsLibModule = /** @class */ (function () {
-        function CtsLibModule() {
+        function CtsLibModule(parentModule) {
+            if (parentModule) {
+                throw new Error('GreetingModule is already loaded. Import it in the AppModule only');
+            }
         }
+        CtsLibModule.forRoot = function (config) {
+            return {
+                ngModule: CtsLibModule,
+                providers: [
+                    { provide: CtsConstants, useValue: config }
+                ]
+            };
+        };
         return CtsLibModule;
     }());
     CtsLibModule.ɵmod = i0.ɵɵdefineNgModule({ type: CtsLibModule });
-    CtsLibModule.ɵinj = i0.ɵɵdefineInjector({ factory: function CtsLibModule_Factory(t) { return new (t || CtsLibModule)(); }, providers: [
+    CtsLibModule.ɵinj = i0.ɵɵdefineInjector({ factory: function CtsLibModule_Factory(t) { return new (t || CtsLibModule)(i0.ɵɵinject(CtsLibModule, 12)); }, providers: [
             CtsConstants,
             CtsService,
             ChemifyService
         ], imports: [[
-                i2.LoggerModule.forRoot({
-                    level: i2.NgxLoggerLevel.DEBUG,
-                    serverLogLevel: i2.NgxLoggerLevel.OFF
+                i3.LoggerModule.forRoot({
+                    level: i3.NgxLoggerLevel.DEBUG,
+                    serverLogLevel: i3.NgxLoggerLevel.OFF
                 }),
-                i1.HttpClientModule
+                i2.HttpClientModule
             ]] });
-    (function () { (typeof ngJitMode === "undefined" || ngJitMode) && i0.ɵɵsetNgModuleScope(CtsLibModule, { imports: [i2.LoggerModule, i1.HttpClientModule] }); })();
+    (function () { (typeof ngJitMode === "undefined" || ngJitMode) && i0.ɵɵsetNgModuleScope(CtsLibModule, { imports: [i3.LoggerModule, i2.HttpClientModule] }); })();
     /*@__PURE__*/ (function () {
         i0.ɵsetClassMetadata(CtsLibModule, [{
                 type: i0.NgModule,
                 args: [{
                         imports: [
-                            i2.LoggerModule.forRoot({
-                                level: i2.NgxLoggerLevel.DEBUG,
-                                serverLogLevel: i2.NgxLoggerLevel.OFF
+                            i3.LoggerModule.forRoot({
+                                level: i3.NgxLoggerLevel.DEBUG,
+                                serverLogLevel: i3.NgxLoggerLevel.OFF
                             }),
-                            i1.HttpClientModule
+                            i2.HttpClientModule
                         ],
                         providers: [
                             CtsConstants,
@@ -356,7 +379,13 @@
                             ChemifyService
                         ]
                     }]
-            }], null, null);
+            }], function () {
+            return [{ type: CtsLibModule, decorators: [{
+                            type: i0.Optional
+                        }, {
+                            type: i0.SkipSelf
+                        }] }];
+        }, null);
     })();
 
     /*
