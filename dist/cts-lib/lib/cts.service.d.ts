@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { NGXLogger } from 'ngx-logger';
-import { CtsConstants } from './cts-constants';
+import { CtsConstant } from './cts-constant';
 import * as i0 from "@angular/core";
 export declare class CtsService {
     http: HttpClient;
     logger: NGXLogger;
-    ctsConstant: CtsConstants;
+    config: CtsConstant;
     apiUrl: any;
-    constructor(http: HttpClient, logger: NGXLogger, ctsConstant: CtsConstants);
+    constructor(http: HttpClient, logger: NGXLogger, config: CtsConstant);
     private serializeData;
     /**
      * converts the given Molecule to an InChI Key

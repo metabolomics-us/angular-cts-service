@@ -1,7 +1,8 @@
 import {Inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {NGXLogger} from 'ngx-logger';
-import {CtsConstants} from './cts-constants';
+import {CtsConstantTokenService} from './cts-constant-token.service';
+import {CtsConstant} from './cts-constant';
 
 @Injectable({
   providedIn: 'root'
@@ -9,10 +10,10 @@ import {CtsConstants} from './cts-constants';
 export class ChemifyService{
   apiUrl;
   constructor(@Inject(HttpClient) public http: HttpClient, @Inject(NGXLogger) public logger: NGXLogger,
-              @Inject(CtsConstants) public ctsConstants: CtsConstants) {
-    this.apiUrl = ctsConstants.apiUrl;
+              @Inject(CtsConstantTokenService) public config: CtsConstant) {
+    this.apiUrl = config.apiUrl;
     logger.info(this.apiUrl);
-    logger.info(this.ctsConstants.apiUrl);
+    logger.info(this.config.apiUrl);
   }
 
   /**
@@ -20,7 +21,6 @@ export class ChemifyService{
    */
   nameToInChIKey(chemicalName, callback, errorCallback): void{
     this.logger.info(this.apiUrl);
-    this.logger.info(this.ctsConstants.apiUrl);
     this.http.get(`${this.apiUrl}/chemify/rest/identify/${encodeURI(chemicalName)}`)
       .subscribe((res) => {
         const result = '';

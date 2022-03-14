@@ -1,18 +1,14 @@
-import { ɵɵinject, ɵɵdefineInjectable, ɵsetClassMetadata, Injectable, Inject, ɵɵdefineNgModule, ɵɵdefineInjector, ɵɵsetNgModuleScope, NgModule } from '@angular/core';
+import { InjectionToken, ɵɵinject, ɵɵdefineInjectable, ɵsetClassMetadata, Injectable, Inject, ɵɵdefineNgModule, ɵɵdefineInjector, ɵɵsetNgModuleScope, NgModule } from '@angular/core';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { NGXLogger, LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 
-class CtsConstants {
-    constructor() {
-        this.apiUrl = '';
-    }
-}
+const CtsConstantTokenService = new InjectionToken('CtsConstant');
 
 class CtsService {
-    constructor(http, logger, ctsConstant) {
+    constructor(http, logger, config) {
         this.http = http;
         this.logger = logger;
-        this.ctsConstant = ctsConstant;
+        this.config = config;
         this.serializeData = (data) => {
             if (typeof data !== 'object' && data !== null) {
                 return ((data == null) ? '' : data.toString());
@@ -28,8 +24,8 @@ class CtsService {
             const source = buffer.join('&').replace(/%20/g, '+');
             return (source);
         };
-        this.apiUrl = ctsConstant.apiUrl;
-        console.log(this.ctsConstant.apiUrl);
+        this.apiUrl = config.apiUrl;
+        console.log(this.config.apiUrl);
         console.log(this.apiUrl);
     }
     /**
@@ -37,7 +33,6 @@ class CtsService {
      */
     convertToInchiKey(molecule, callback, errorCallback) {
         this.logger.info(this.apiUrl);
-        this.logger.info(this.ctsConstant.apiUrl);
         const serializedMolecule = this.serializeData(molecule);
         this.http.post(`${this.apiUrl}/service/moltoinchi`, { mol: serializedMolecule }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } }).subscribe((res) => {
             this.logger.debug('received: ' + res);
@@ -81,7 +76,6 @@ class CtsService {
      */
     convertInchiKeyToMol(inchiKey, callback, errorCallback) {
         this.logger.info(this.apiUrl);
-        this.logger.info(this.ctsConstant.apiUrl);
         this.http.get(`${this.apiUrl}/service/inchikeytomol/${inchiKey}`).subscribe((res) => {
             if (typeof res !== 'undefined') {
                 if (res.error !== '') {
@@ -120,7 +114,6 @@ class CtsService {
      */
     convertSmileToInChICode(smiles, callback, errorCallback) {
         this.logger.info(this.apiUrl);
-        this.logger.info(this.ctsConstant.apiUrl);
         const serializedSmiles = this.serializeData(smiles);
         this.http.post(`${this.apiUrl}/service/smiletoinchi`, { smiles: serializedSmiles.trim() }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } }).subscribe((res) => {
             if (typeof res !== 'undefined') {
@@ -163,7 +156,6 @@ class CtsService {
      */
     convertInChICodeToKey(inchiCode, callback, errorCallback) {
         this.logger.info(this.apiUrl);
-        this.logger.info(this.ctsConstant.apiUrl);
         const serializedInchiCode = this.serializeData(inchiCode);
         this.http.post(`${this.apiUrl}/service/inchicodetoinchikey`, { inchicode: serializedInchiCode }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } })
             .subscribe((res) => {
@@ -207,7 +199,6 @@ class CtsService {
      */
     convertInChICodeToMol(inchiCode, callback, errorCallback) {
         this.logger.info(this.apiUrl);
-        this.logger.info(this.ctsConstant.apiUrl);
         const serializedInchiCode = this.serializeData(inchiCode);
         this.http.post(`${this.apiUrl}/service/inchitomol`, { inchicode: serializedInchiCode }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } })
             .subscribe((res) => {
@@ -247,7 +238,7 @@ class CtsService {
         });
     }
 }
-CtsService.ɵfac = function CtsService_Factory(t) { return new (t || CtsService)(ɵɵinject(HttpClient), ɵɵinject(NGXLogger), ɵɵinject(CtsConstants)); };
+CtsService.ɵfac = function CtsService_Factory(t) { return new (t || CtsService)(ɵɵinject(HttpClient), ɵɵinject(NGXLogger), ɵɵinject(CtsConstantTokenService)); };
 CtsService.ɵprov = ɵɵdefineInjectable({ token: CtsService, factory: CtsService.ɵfac, providedIn: 'root' });
 /*@__PURE__*/ (function () { ɵsetClassMetadata(CtsService, [{
         type: Injectable,
@@ -260,26 +251,25 @@ CtsService.ɵprov = ɵɵdefineInjectable({ token: CtsService, factory: CtsServic
             }] }, { type: NGXLogger, decorators: [{
                 type: Inject,
                 args: [NGXLogger]
-            }] }, { type: CtsConstants, decorators: [{
+            }] }, { type: undefined, decorators: [{
                 type: Inject,
-                args: [CtsConstants]
+                args: [CtsConstantTokenService]
             }] }]; }, null); })();
 
 class ChemifyService {
-    constructor(http, logger, ctsConstants) {
+    constructor(http, logger, config) {
         this.http = http;
         this.logger = logger;
-        this.ctsConstants = ctsConstants;
-        this.apiUrl = ctsConstants.apiUrl;
+        this.config = config;
+        this.apiUrl = config.apiUrl;
         logger.info(this.apiUrl);
-        logger.info(this.ctsConstants.apiUrl);
+        logger.info(this.config.apiUrl);
     }
     /**
      * converts the given name to an InChI Key
      */
     nameToInChIKey(chemicalName, callback, errorCallback) {
         this.logger.info(this.apiUrl);
-        this.logger.info(this.ctsConstants.apiUrl);
         this.http.get(`${this.apiUrl}/chemify/rest/identify/${encodeURI(chemicalName)}`)
             .subscribe((res) => {
             const result = '';
@@ -314,7 +304,7 @@ class ChemifyService {
         });
     }
 }
-ChemifyService.ɵfac = function ChemifyService_Factory(t) { return new (t || ChemifyService)(ɵɵinject(HttpClient), ɵɵinject(NGXLogger), ɵɵinject(CtsConstants)); };
+ChemifyService.ɵfac = function ChemifyService_Factory(t) { return new (t || ChemifyService)(ɵɵinject(HttpClient), ɵɵinject(NGXLogger), ɵɵinject(CtsConstantTokenService)); };
 ChemifyService.ɵprov = ɵɵdefineInjectable({ token: ChemifyService, factory: ChemifyService.ɵfac, providedIn: 'root' });
 /*@__PURE__*/ (function () { ɵsetClassMetadata(ChemifyService, [{
         type: Injectable,
@@ -327,9 +317,9 @@ ChemifyService.ɵprov = ɵɵdefineInjectable({ token: ChemifyService, factory: C
             }] }, { type: NGXLogger, decorators: [{
                 type: Inject,
                 args: [NGXLogger]
-            }] }, { type: CtsConstants, decorators: [{
+            }] }, { type: undefined, decorators: [{
                 type: Inject,
-                args: [CtsConstants]
+                args: [CtsConstantTokenService]
             }] }]; }, null); })();
 
 class CtsLibModule {
@@ -338,17 +328,18 @@ class CtsLibModule {
         return {
             ngModule: CtsLibModule,
             providers: [
-                { provide: CtsConstants, useValue: config }
+                CtsService,
+                ChemifyService,
+                {
+                    provide: CtsConstantTokenService,
+                    useValue: config
+                }
             ]
         };
     }
 }
 CtsLibModule.ɵmod = ɵɵdefineNgModule({ type: CtsLibModule });
-CtsLibModule.ɵinj = ɵɵdefineInjector({ factory: function CtsLibModule_Factory(t) { return new (t || CtsLibModule)(); }, providers: [
-        CtsConstants,
-        CtsService,
-        ChemifyService
-    ], imports: [[
+CtsLibModule.ɵinj = ɵɵdefineInjector({ factory: function CtsLibModule_Factory(t) { return new (t || CtsLibModule)(); }, imports: [[
             LoggerModule.forRoot({
                 level: NgxLoggerLevel.DEBUG,
                 serverLogLevel: NgxLoggerLevel.OFF
@@ -365,11 +356,6 @@ CtsLibModule.ɵinj = ɵɵdefineInjector({ factory: function CtsLibModule_Factory
                         serverLogLevel: NgxLoggerLevel.OFF
                     }),
                     HttpClientModule
-                ],
-                providers: [
-                    CtsConstants,
-                    CtsService,
-                    ChemifyService
                 ]
             }]
     }], null, null); })();
@@ -382,5 +368,5 @@ CtsLibModule.ɵinj = ɵɵdefineInjector({ factory: function CtsLibModule_Factory
  * Generated bundle index. Do not edit.
  */
 
-export { ChemifyService, CtsConstants, CtsLibModule, CtsService };
+export { ChemifyService, CtsLibModule, CtsService };
 //# sourceMappingURL=cts-lib.js.map

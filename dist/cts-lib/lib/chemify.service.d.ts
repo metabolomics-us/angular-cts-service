@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { NGXLogger } from 'ngx-logger';
-import { CtsConstants } from './cts-constants';
+import { CtsConstant } from './cts-constant';
 import * as i0 from "@angular/core";
 export declare class ChemifyService {
     http: HttpClient;
     logger: NGXLogger;
-    ctsConstants: CtsConstants;
+    config: CtsConstant;
     apiUrl: any;
-    constructor(http: HttpClient, logger: NGXLogger, ctsConstants: CtsConstants);
+    constructor(http: HttpClient, logger: NGXLogger, config: CtsConstant);
     /**
      * converts the given name to an InChI Key
      */

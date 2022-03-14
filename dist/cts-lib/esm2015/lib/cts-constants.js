@@ -1,6 +1,0 @@
-export class CtsConstants {
-    constructor() {
-        this.apiUrl = '';
-    }
-}
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY3RzLWNvbnN0YW50cy5qcyIsInNvdXJjZVJvb3QiOiIvaG9tZS9ub2xhbi9EZXZlbG9wbWVudC9tb25hLXNlcnZpY2VzL2FuZ3VsYXItY3RzLXNlcnZpY2UvcHJvamVjdHMvY3RzLWxpYi9zcmMvIiwic291cmNlcyI6WyJsaWIvY3RzLWNvbnN0YW50cy50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQSxNQUFNLE9BQU8sWUFBWTtJQUF6QjtRQUNFLFdBQU0sR0FBRyxFQUFFLENBQUM7SUFDZCxDQUFDO0NBQUEiLCJzb3VyY2VzQ29udGVudCI6WyJleHBvcnQgY2xhc3MgQ3RzQ29uc3RhbnRze1xuICBhcGlVcmwgPSAnJztcbn1cbiJdfQ==
