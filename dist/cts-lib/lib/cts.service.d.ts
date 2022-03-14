@@ -6,7 +6,7 @@ export declare class CtsService {
     http: HttpClient;
     logger: NGXLogger;
     ctsConstant: CtsConstants;
-    private apiUrl;
+    apiUrl: any;
     constructor(http: HttpClient, logger: NGXLogger, ctsConstant: CtsConstants);
     private serializeData;
     /**

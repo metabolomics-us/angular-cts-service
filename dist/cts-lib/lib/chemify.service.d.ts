@@ -6,7 +6,7 @@ export declare class ChemifyService {
     http: HttpClient;
     logger: NGXLogger;
     ctsConstants: CtsConstants;
-    private apiUrl;
+    apiUrl: any;
     constructor(http: HttpClient, logger: NGXLogger, ctsConstants: CtsConstants);
     /**
      * converts the given name to an InChI Key

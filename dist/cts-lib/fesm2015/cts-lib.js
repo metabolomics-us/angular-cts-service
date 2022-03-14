@@ -13,7 +13,6 @@ class CtsService {
         this.http = http;
         this.logger = logger;
         this.ctsConstant = ctsConstant;
-        this.apiUrl = '';
         this.serializeData = (data) => {
             if (typeof data !== 'object' && data !== null) {
                 return ((data == null) ? '' : data.toString());
@@ -234,6 +233,8 @@ class CtsService {
             });
         };
         this.apiUrl = ctsConstant.apiUrl;
+        console.log(this.ctsConstant.apiUrl);
+        console.log(this.apiUrl);
     }
 }
 CtsService.ɵfac = function CtsService_Factory(t) { return new (t || CtsService)(ɵɵinject(HttpClient), ɵɵinject(NGXLogger), ɵɵinject(CtsConstants)); };
@@ -259,7 +260,6 @@ class ChemifyService {
         this.http = http;
         this.logger = logger;
         this.ctsConstants = ctsConstants;
-        this.apiUrl = '';
         /**
          * converts the given name to an InChI Key
          */
@@ -298,6 +298,8 @@ class ChemifyService {
             });
         };
         this.apiUrl = ctsConstants.apiUrl;
+        console.log(this.ctsConstants.apiUrl);
+        console.log(this.apiUrl);
     }
 }
 ChemifyService.ɵfac = function ChemifyService_Factory(t) { return new (t || ChemifyService)(ɵɵinject(HttpClient), ɵɵinject(NGXLogger), ɵɵinject(CtsConstants)); };

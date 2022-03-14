@@ -17,7 +17,6 @@
             this.http = http;
             this.logger = logger;
             this.ctsConstant = ctsConstant;
-            this.apiUrl = '';
             this.serializeData = function (data) {
                 if (typeof data !== 'object' && data !== null) {
                     return ((data == null) ? '' : data.toString());
@@ -238,6 +237,8 @@
                 });
             };
             this.apiUrl = ctsConstant.apiUrl;
+            console.log(this.ctsConstant.apiUrl);
+            console.log(this.apiUrl);
         }
         return CtsService;
     }());
@@ -269,7 +270,6 @@
             this.http = http;
             this.logger = logger;
             this.ctsConstants = ctsConstants;
-            this.apiUrl = '';
             /**
              * converts the given name to an InChI Key
              */
@@ -308,6 +308,8 @@
                 });
             };
             this.apiUrl = ctsConstants.apiUrl;
+            console.log(this.ctsConstants.apiUrl);
+            console.log(this.apiUrl);
         }
         return ChemifyService;
     }());
