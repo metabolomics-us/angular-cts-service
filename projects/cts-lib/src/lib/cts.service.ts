@@ -7,11 +7,13 @@ import {CtsConstants} from './cts-constants';
   providedIn: 'root'
 })
 export class CtsService {
-  private apiUrl = '';
+  apiUrl;
 
   constructor(@Inject(HttpClient) public http: HttpClient, @Inject(NGXLogger) public logger: NGXLogger,
               @Inject(CtsConstants) public ctsConstant: CtsConstants) {
     this.apiUrl = ctsConstant.apiUrl;
+    console.log(this.ctsConstant.apiUrl);
+    console.log(this.apiUrl);
   }
 
   private serializeData = (data) => {

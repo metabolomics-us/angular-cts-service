@@ -7,10 +7,12 @@ import {CtsConstants} from './cts-constants';
   providedIn: 'root'
 })
 export class ChemifyService{
-  private apiUrl = '';
+  apiUrl;
   constructor(@Inject(HttpClient) public http: HttpClient, @Inject(NGXLogger) public logger: NGXLogger,
               @Inject(CtsConstants) public ctsConstants: CtsConstants) {
     this.apiUrl = ctsConstants.apiUrl;
+    console.log(this.ctsConstants.apiUrl);
+    console.log(this.apiUrl);
   }
 
   /**
