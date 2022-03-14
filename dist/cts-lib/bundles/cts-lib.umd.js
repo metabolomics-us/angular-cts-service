@@ -1,21 +1,22 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/common/http'), require('ngx-logger')) :
     typeof define === 'function' && define.amd ? define('cts-lib', ['exports', '@angular/core', '@angular/common/http', 'ngx-logger'], factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global['cts-lib'] = {}, global.ng.core, global.ng.common.http, global.i3));
-}(this, (function (exports, i0, i2, i3) { 'use strict';
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global['cts-lib'] = {}, global.ng.core, global.ng.common.http, global.i2));
+}(this, (function (exports, i0, i1, i2) { 'use strict';
 
     var CtsConstants = /** @class */ (function () {
         function CtsConstants() {
-            this.apiUrl = 'https://cts.fiehnlab.ucdavis.edu';
+            this.apiUrl = '';
         }
         return CtsConstants;
     }());
 
     var CtsService = /** @class */ (function () {
-        function CtsService(http, logger, config) {
+        function CtsService(http, logger, ctsConstant) {
             var _this = this;
             this.http = http;
             this.logger = logger;
+            this.ctsConstant = ctsConstant;
             this.apiUrl = '';
             this.serializeData = function (data) {
                 if (typeof data !== 'object' && data !== null) {
@@ -236,13 +237,11 @@
                     }
                 });
             };
-            if (config) {
-                this.apiUrl = config.apiUrl;
-            }
+            this.apiUrl = ctsConstant.apiUrl;
         }
         return CtsService;
     }());
-    CtsService.ɵfac = function CtsService_Factory(t) { return new (t || CtsService)(i0.ɵɵinject(i2.HttpClient), i0.ɵɵinject(i3.NGXLogger), i0.ɵɵinject(CtsConstants, 8)); };
+    CtsService.ɵfac = function CtsService_Factory(t) { return new (t || CtsService)(i0.ɵɵinject(i1.HttpClient), i0.ɵɵinject(i2.NGXLogger), i0.ɵɵinject(CtsConstants)); };
     CtsService.ɵprov = i0.ɵɵdefineInjectable({ token: CtsService, factory: CtsService.ɵfac, providedIn: 'root' });
     /*@__PURE__*/ (function () {
         i0.ɵsetClassMetadata(CtsService, [{
@@ -251,23 +250,25 @@
                         providedIn: 'root'
                     }]
             }], function () {
-            return [{ type: i2.HttpClient, decorators: [{
+            return [{ type: i1.HttpClient, decorators: [{
                             type: i0.Inject,
-                            args: [i2.HttpClient]
-                        }] }, { type: i3.NGXLogger, decorators: [{
+                            args: [i1.HttpClient]
+                        }] }, { type: i2.NGXLogger, decorators: [{
                             type: i0.Inject,
-                            args: [i3.NGXLogger]
+                            args: [i2.NGXLogger]
                         }] }, { type: CtsConstants, decorators: [{
-                            type: i0.Optional
+                            type: i0.Inject,
+                            args: [CtsConstants]
                         }] }];
         }, null);
     })();
 
     var ChemifyService = /** @class */ (function () {
-        function ChemifyService(http, logger, config) {
+        function ChemifyService(http, logger, ctsConstants) {
             var _this = this;
             this.http = http;
             this.logger = logger;
+            this.ctsConstants = ctsConstants;
             this.apiUrl = '';
             /**
              * converts the given name to an InChI Key
@@ -306,13 +307,11 @@
                     }
                 });
             };
-            if (config) {
-                this.apiUrl = config.apiUrl;
-            }
+            this.apiUrl = ctsConstants.apiUrl;
         }
         return ChemifyService;
     }());
-    ChemifyService.ɵfac = function ChemifyService_Factory(t) { return new (t || ChemifyService)(i0.ɵɵinject(i2.HttpClient), i0.ɵɵinject(i3.NGXLogger), i0.ɵɵinject(CtsConstants, 8)); };
+    ChemifyService.ɵfac = function ChemifyService_Factory(t) { return new (t || ChemifyService)(i0.ɵɵinject(i1.HttpClient), i0.ɵɵinject(i2.NGXLogger), i0.ɵɵinject(CtsConstants)); };
     ChemifyService.ɵprov = i0.ɵɵdefineInjectable({ token: ChemifyService, factory: ChemifyService.ɵfac, providedIn: 'root' });
     /*@__PURE__*/ (function () {
         i0.ɵsetClassMetadata(ChemifyService, [{
@@ -321,25 +320,24 @@
                         providedIn: 'root'
                     }]
             }], function () {
-            return [{ type: i2.HttpClient, decorators: [{
+            return [{ type: i1.HttpClient, decorators: [{
                             type: i0.Inject,
-                            args: [i2.HttpClient]
-                        }] }, { type: i3.NGXLogger, decorators: [{
+                            args: [i1.HttpClient]
+                        }] }, { type: i2.NGXLogger, decorators: [{
                             type: i0.Inject,
-                            args: [i3.NGXLogger]
+                            args: [i2.NGXLogger]
                         }] }, { type: CtsConstants, decorators: [{
-                            type: i0.Optional
+                            type: i0.Inject,
+                            args: [CtsConstants]
                         }] }];
         }, null);
     })();
 
     var CtsLibModule = /** @class */ (function () {
-        function CtsLibModule(parentModule) {
-            if (parentModule) {
-                throw new Error('GreetingModule is already loaded. Import it in the AppModule only');
-            }
+        function CtsLibModule() {
         }
         CtsLibModule.forRoot = function (config) {
+            console.log(config);
             return {
                 ngModule: CtsLibModule,
                 providers: [
@@ -350,28 +348,28 @@
         return CtsLibModule;
     }());
     CtsLibModule.ɵmod = i0.ɵɵdefineNgModule({ type: CtsLibModule });
-    CtsLibModule.ɵinj = i0.ɵɵdefineInjector({ factory: function CtsLibModule_Factory(t) { return new (t || CtsLibModule)(i0.ɵɵinject(CtsLibModule, 12)); }, providers: [
+    CtsLibModule.ɵinj = i0.ɵɵdefineInjector({ factory: function CtsLibModule_Factory(t) { return new (t || CtsLibModule)(); }, providers: [
             CtsConstants,
             CtsService,
             ChemifyService
         ], imports: [[
-                i3.LoggerModule.forRoot({
-                    level: i3.NgxLoggerLevel.DEBUG,
-                    serverLogLevel: i3.NgxLoggerLevel.OFF
+                i2.LoggerModule.forRoot({
+                    level: i2.NgxLoggerLevel.DEBUG,
+                    serverLogLevel: i2.NgxLoggerLevel.OFF
                 }),
-                i2.HttpClientModule
+                i1.HttpClientModule
             ]] });
-    (function () { (typeof ngJitMode === "undefined" || ngJitMode) && i0.ɵɵsetNgModuleScope(CtsLibModule, { imports: [i3.LoggerModule, i2.HttpClientModule] }); })();
+    (function () { (typeof ngJitMode === "undefined" || ngJitMode) && i0.ɵɵsetNgModuleScope(CtsLibModule, { imports: [i2.LoggerModule, i1.HttpClientModule] }); })();
     /*@__PURE__*/ (function () {
         i0.ɵsetClassMetadata(CtsLibModule, [{
                 type: i0.NgModule,
                 args: [{
                         imports: [
-                            i3.LoggerModule.forRoot({
-                                level: i3.NgxLoggerLevel.DEBUG,
-                                serverLogLevel: i3.NgxLoggerLevel.OFF
+                            i2.LoggerModule.forRoot({
+                                level: i2.NgxLoggerLevel.DEBUG,
+                                serverLogLevel: i2.NgxLoggerLevel.OFF
                             }),
-                            i2.HttpClientModule
+                            i1.HttpClientModule
                         ],
                         providers: [
                             CtsConstants,
@@ -379,13 +377,7 @@
                             ChemifyService
                         ]
                     }]
-            }], function () {
-            return [{ type: CtsLibModule, decorators: [{
-                            type: i0.Optional
-                        }, {
-                            type: i0.SkipSelf
-                        }] }];
-        }, null);
+            }], null, null);
     })();
 
     /*

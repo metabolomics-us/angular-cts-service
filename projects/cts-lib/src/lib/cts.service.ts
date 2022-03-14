@@ -9,9 +9,9 @@ import {CtsConstants} from './cts-constants';
 export class CtsService {
   private apiUrl = '';
 
-  constructor(@Inject(HttpClient) private http: HttpClient, @Inject(NGXLogger) private logger: NGXLogger,
-              @Optional() config?: CtsConstants) {
-    if (config) { this.apiUrl = config.apiUrl; }
+  constructor(@Inject(HttpClient) public http: HttpClient, @Inject(NGXLogger) public logger: NGXLogger,
+              @Inject(CtsConstants) public ctsConstant: CtsConstants) {
+    this.apiUrl = ctsConstant.apiUrl;
   }
 
   private serializeData = (data) => {

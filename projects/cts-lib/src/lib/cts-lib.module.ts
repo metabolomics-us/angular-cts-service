@@ -20,14 +20,8 @@ import {ChemifyService} from './chemify.service';
   ]
 })
 export class CtsLibModule {
-  constructor(@Optional() @SkipSelf() parentModule?: CtsLibModule) {
-    if (parentModule) {
-      throw new Error(
-        'GreetingModule is already loaded. Import it in the AppModule only');
-    }
-  }
-
   static forRoot(config: CtsConstants): ModuleWithProviders<CtsLibModule> {
+    console.log(config);
     return {
       ngModule: CtsLibModule,
       providers: [

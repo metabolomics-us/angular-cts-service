@@ -1,4 +1,4 @@
-import {Inject, Injectable, Optional} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {NGXLogger} from 'ngx-logger';
 import {CtsConstants} from './cts-constants';
@@ -8,9 +8,9 @@ import {CtsConstants} from './cts-constants';
 })
 export class ChemifyService{
   private apiUrl = '';
-  constructor(@Inject(HttpClient) private http: HttpClient, @Inject(NGXLogger) private logger: NGXLogger,
-              @Optional() config?: CtsConstants) {
-    if (config) { this.apiUrl = config.apiUrl; }
+  constructor(@Inject(HttpClient) public http: HttpClient, @Inject(NGXLogger) public logger: NGXLogger,
+              @Inject(CtsConstants) public ctsConstants: CtsConstants) {
+    this.apiUrl = ctsConstants.apiUrl;
   }
 
   /**

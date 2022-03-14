@@ -1,17 +1,18 @@
-import { ɵɵinject, ɵɵdefineInjectable, ɵsetClassMetadata, Injectable, Inject, Optional, ɵɵdefineNgModule, ɵɵdefineInjector, ɵɵsetNgModuleScope, NgModule, SkipSelf } from '@angular/core';
+import { ɵɵinject, ɵɵdefineInjectable, ɵsetClassMetadata, Injectable, Inject, ɵɵdefineNgModule, ɵɵdefineInjector, ɵɵsetNgModuleScope, NgModule } from '@angular/core';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { NGXLogger, LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 
 class CtsConstants {
     constructor() {
-        this.apiUrl = 'https://cts.fiehnlab.ucdavis.edu';
+        this.apiUrl = '';
     }
 }
 
 class CtsService {
-    constructor(http, logger, config) {
+    constructor(http, logger, ctsConstant) {
         this.http = http;
         this.logger = logger;
+        this.ctsConstant = ctsConstant;
         this.apiUrl = '';
         this.serializeData = (data) => {
             if (typeof data !== 'object' && data !== null) {
@@ -232,12 +233,10 @@ class CtsService {
                 }
             });
         };
-        if (config) {
-            this.apiUrl = config.apiUrl;
-        }
+        this.apiUrl = ctsConstant.apiUrl;
     }
 }
-CtsService.ɵfac = function CtsService_Factory(t) { return new (t || CtsService)(ɵɵinject(HttpClient), ɵɵinject(NGXLogger), ɵɵinject(CtsConstants, 8)); };
+CtsService.ɵfac = function CtsService_Factory(t) { return new (t || CtsService)(ɵɵinject(HttpClient), ɵɵinject(NGXLogger), ɵɵinject(CtsConstants)); };
 CtsService.ɵprov = ɵɵdefineInjectable({ token: CtsService, factory: CtsService.ɵfac, providedIn: 'root' });
 /*@__PURE__*/ (function () { ɵsetClassMetadata(CtsService, [{
         type: Injectable,
@@ -251,13 +250,15 @@ CtsService.ɵprov = ɵɵdefineInjectable({ token: CtsService, factory: CtsServic
                 type: Inject,
                 args: [NGXLogger]
             }] }, { type: CtsConstants, decorators: [{
-                type: Optional
+                type: Inject,
+                args: [CtsConstants]
             }] }]; }, null); })();
 
 class ChemifyService {
-    constructor(http, logger, config) {
+    constructor(http, logger, ctsConstants) {
         this.http = http;
         this.logger = logger;
+        this.ctsConstants = ctsConstants;
         this.apiUrl = '';
         /**
          * converts the given name to an InChI Key
@@ -296,12 +297,10 @@ class ChemifyService {
                 }
             });
         };
-        if (config) {
-            this.apiUrl = config.apiUrl;
-        }
+        this.apiUrl = ctsConstants.apiUrl;
     }
 }
-ChemifyService.ɵfac = function ChemifyService_Factory(t) { return new (t || ChemifyService)(ɵɵinject(HttpClient), ɵɵinject(NGXLogger), ɵɵinject(CtsConstants, 8)); };
+ChemifyService.ɵfac = function ChemifyService_Factory(t) { return new (t || ChemifyService)(ɵɵinject(HttpClient), ɵɵinject(NGXLogger), ɵɵinject(CtsConstants)); };
 ChemifyService.ɵprov = ɵɵdefineInjectable({ token: ChemifyService, factory: ChemifyService.ɵfac, providedIn: 'root' });
 /*@__PURE__*/ (function () { ɵsetClassMetadata(ChemifyService, [{
         type: Injectable,
@@ -315,16 +314,13 @@ ChemifyService.ɵprov = ɵɵdefineInjectable({ token: ChemifyService, factory: C
                 type: Inject,
                 args: [NGXLogger]
             }] }, { type: CtsConstants, decorators: [{
-                type: Optional
+                type: Inject,
+                args: [CtsConstants]
             }] }]; }, null); })();
 
 class CtsLibModule {
-    constructor(parentModule) {
-        if (parentModule) {
-            throw new Error('GreetingModule is already loaded. Import it in the AppModule only');
-        }
-    }
     static forRoot(config) {
+        console.log(config);
         return {
             ngModule: CtsLibModule,
             providers: [
@@ -334,7 +330,7 @@ class CtsLibModule {
     }
 }
 CtsLibModule.ɵmod = ɵɵdefineNgModule({ type: CtsLibModule });
-CtsLibModule.ɵinj = ɵɵdefineInjector({ factory: function CtsLibModule_Factory(t) { return new (t || CtsLibModule)(ɵɵinject(CtsLibModule, 12)); }, providers: [
+CtsLibModule.ɵinj = ɵɵdefineInjector({ factory: function CtsLibModule_Factory(t) { return new (t || CtsLibModule)(); }, providers: [
         CtsConstants,
         CtsService,
         ChemifyService
@@ -362,11 +358,7 @@ CtsLibModule.ɵinj = ɵɵdefineInjector({ factory: function CtsLibModule_Factory
                     ChemifyService
                 ]
             }]
-    }], function () { return [{ type: CtsLibModule, decorators: [{
-                type: Optional
-            }, {
-                type: SkipSelf
-            }] }]; }, null); })();
+    }], null, null); })();
 
 /*
  * Public API Surface of cts-lib
