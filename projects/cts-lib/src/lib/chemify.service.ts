@@ -11,15 +11,16 @@ export class ChemifyService{
   constructor(@Inject(HttpClient) public http: HttpClient, @Inject(NGXLogger) public logger: NGXLogger,
               @Inject(CtsConstants) public ctsConstants: CtsConstants) {
     this.apiUrl = ctsConstants.apiUrl;
-    console.log(this.ctsConstants.apiUrl);
-    console.log(this.apiUrl);
+    logger.info(this.apiUrl);
+    logger.info(this.ctsConstants.apiUrl);
   }
 
   /**
    * converts the given name to an InChI Key
    */
-  nameToInChIKey = (chemicalName, callback, errorCallback) => {
-
+  nameToInChIKey(chemicalName, callback, errorCallback): void{
+    this.logger.info(this.apiUrl);
+    this.logger.info(this.ctsConstants.apiUrl);
     this.http.get(`${this.apiUrl}/chemify/rest/identify/${encodeURI(chemicalName)}`)
       .subscribe((res) => {
         const result = '';

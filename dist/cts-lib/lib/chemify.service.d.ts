@@ -11,7 +11,7 @@ export declare class ChemifyService {
     /**
      * converts the given name to an InChI Key
      */
-    nameToInChIKey: (chemicalName: any, callback: any, errorCallback: any) => void;
+    nameToInChIKey(chemicalName: any, callback: any, errorCallback: any): void;
     static ɵfac: i0.ɵɵFactoryDef<ChemifyService, never>;
     static ɵprov: i0.ɵɵInjectableDef<ChemifyService>;
 }
