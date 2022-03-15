@@ -2,7 +2,6 @@ import { TestBed } from '@angular/core/testing';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import { CtsService } from './cts.service';
 import {ChemifyService} from './chemify.service';
-import {CtsConstants} from './cts-constants';
 import {LoggerTestingModule, NGXLoggerMock} from 'ngx-logger/testing';
 import {HttpClient} from '@angular/common/http';
 import {NGXLogger} from 'ngx-logger';
@@ -32,6 +31,7 @@ describe('when I call gwCtsService.convertInchiKeyToMol', () => {
   let httpClient: HttpClient;
   let httpTestingController: HttpTestingController;
   let logger: NGXLogger;
+  const apiUrl = 'http://cts.fiehnlab.ucdavis.edu';
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -40,8 +40,7 @@ describe('when I call gwCtsService.convertInchiKeyToMol', () => {
         LoggerTestingModule
       ],
       providers: [
-        CtsService,
-        CtsConstants]
+        CtsService]
     });
     service = TestBed.inject(CtsService);
     httpClient = TestBed.inject(HttpClient);
@@ -58,7 +57,7 @@ describe('when I call gwCtsService.convertInchiKeyToMol', () => {
       expect(data).toEqual(sampleResult.molecule);
     }, undefined);
 
-    const req = httpTestingController.expectOne(`${CtsConstants.apiUrl}/service/inchikeytomol/HQMLIDZJXVVKCW-REOHCLBHSA-O`);
+    const req = httpTestingController.expectOne(`${apiUrl}/service/inchikeytomol/HQMLIDZJXVVKCW-REOHCLBHSA-O`);
     expect(req.request.method).toBe('GET');
     req.flush(sampleResult);
   });
@@ -72,7 +71,7 @@ describe('when I call gwCtsService.convertInchiKeyToMol', () => {
     service.convertInchiKeyToMol('HQMLIDZJXVVKCW-REOHCDBHSA-O', (data) => {
       expect(data).toEqual(null);
     }, undefined);
-    const req = httpTestingController.expectOne(`${CtsConstants.apiUrl}/service/inchikeytomol/HQMLIDZJXVVKCW-REOHCDBHSA-O`);
+    const req = httpTestingController.expectOne(`${apiUrl}/service/inchikeytomol/HQMLIDZJXVVKCW-REOHCDBHSA-O`);
     expect(req.request.method).toBe('GET');
     req.flush(results);
 
@@ -86,7 +85,7 @@ describe('when I call gwCtsService.convertInchiKeyToMol', () => {
     service.convertInchiKeyToMol('ABC', (data) => {}, (error) => {
       expect(error).toEqual(results.error);
     });
-    const req = httpTestingController.expectOne(`${CtsConstants.apiUrl}/service/inchikeytomol/ABC`);
+    const req = httpTestingController.expectOne(`${apiUrl}/service/inchikeytomol/ABC`);
     expect(req.request.method).toBe('GET');
     req.flush(results);
   });
@@ -97,6 +96,7 @@ describe('when I call gwChemifyService.nameToInChIKey', () => {
   let httpClient: HttpClient;
   let httpTestingController: HttpTestingController;
   let logger: NGXLogger;
+  const apiUrl = 'http://cts.fiehnlab.ucdavis.edu';
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -105,8 +105,7 @@ describe('when I call gwChemifyService.nameToInChIKey', () => {
         LoggerTestingModule
       ],
       providers: [
-        ChemifyService,
-        CtsConstants]
+        ChemifyService]
     });
     service = TestBed.inject(ChemifyService);
     httpClient = TestBed.inject(HttpClient);
@@ -156,7 +155,7 @@ describe('when I call gwChemifyService.nameToInChIKey', () => {
       expect(data).toEqual('QNAYBMKLOCPYGJ-REOHCLBHSA-N');
     }, undefined);
 
-    const req = httpTestingController.expectOne(`${CtsConstants.apiUrl}/chemify/rest/identify/alanine`);
+    const req = httpTestingController.expectOne(`${apiUrl}/chemify/rest/identify/alanine`);
     expect(req.request.method).toBe('GET');
     req.flush(results);
   });
@@ -176,7 +175,7 @@ describe('when I call gwChemifyService.nameToInChIKey', () => {
       expect(data).toEqual(null);
     }, undefined);
 
-    const req = httpTestingController.expectOne(`${CtsConstants.apiUrl}/chemify/rest/identify/alanineadasdas`);
+    const req = httpTestingController.expectOne(`${apiUrl}/chemify/rest/identify/alanineadasdas`);
     expect(req.request.method).toBe('GET');
     req.flush(results);
 
