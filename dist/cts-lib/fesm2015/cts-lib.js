@@ -25,14 +25,11 @@ class CtsService {
             return (source);
         };
         this.apiUrl = config.apiUrl;
-        console.log(this.config.apiUrl);
-        console.log(this.apiUrl);
     }
     /**
      * converts the given Molecule to an InChI Key
      */
     convertToInchiKey(molecule, callback, errorCallback) {
-        this.logger.info(this.apiUrl);
         const serializedMolecule = this.serializeData(molecule);
         this.http.post(`${this.apiUrl}/service/moltoinchi`, { mol: serializedMolecule }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } }).subscribe((res) => {
             this.logger.debug('received: ' + res);
@@ -75,7 +72,6 @@ class CtsService {
      * converts an InChI Key to a molecule
      */
     convertInchiKeyToMol(inchiKey, callback, errorCallback) {
-        this.logger.info(this.apiUrl);
         this.http.get(`${this.apiUrl}/service/inchikeytomol/${inchiKey}`).subscribe((res) => {
             if (typeof res !== 'undefined') {
                 if (res.error !== '') {
@@ -113,7 +109,6 @@ class CtsService {
      * utilizes chemspider to convert from a smiles to an inchi
      */
     convertSmileToInChICode(smiles, callback, errorCallback) {
-        this.logger.info(this.apiUrl);
         const serializedSmiles = this.serializeData(smiles);
         this.http.post(`${this.apiUrl}/service/smiletoinchi`, { smiles: serializedSmiles.trim() }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } }).subscribe((res) => {
             if (typeof res !== 'undefined') {
@@ -155,7 +150,6 @@ class CtsService {
      * converts an inchi code to an inchi keyß
      */
     convertInChICodeToKey(inchiCode, callback, errorCallback) {
-        this.logger.info(this.apiUrl);
         const serializedInchiCode = this.serializeData(inchiCode);
         this.http.post(`${this.apiUrl}/service/inchicodetoinchikey`, { inchicode: serializedInchiCode }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } })
             .subscribe((res) => {
@@ -198,7 +192,6 @@ class CtsService {
      * provides us with the molfile for this key
      */
     convertInChICodeToMol(inchiCode, callback, errorCallback) {
-        this.logger.info(this.apiUrl);
         const serializedInchiCode = this.serializeData(inchiCode);
         this.http.post(`${this.apiUrl}/service/inchitomol`, { inchicode: serializedInchiCode }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' } })
             .subscribe((res) => {
@@ -262,14 +255,11 @@ class ChemifyService {
         this.logger = logger;
         this.config = config;
         this.apiUrl = config.apiUrl;
-        logger.info(this.apiUrl);
-        logger.info(this.config.apiUrl);
     }
     /**
      * converts the given name to an InChI Key
      */
     nameToInChIKey(chemicalName, callback, errorCallback) {
-        this.logger.info(this.apiUrl);
         this.http.get(`${this.apiUrl}/chemify/rest/identify/${encodeURI(chemicalName)}`)
             .subscribe((res) => {
             const result = '';
@@ -324,7 +314,6 @@ ChemifyService.ɵprov = ɵɵdefineInjectable({ token: ChemifyService, factory: C
 
 class CtsLibModule {
     static forRoot(config) {
-        console.log(config);
         return {
             ngModule: CtsLibModule,
             providers: [

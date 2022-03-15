@@ -13,8 +13,6 @@ export class CtsService {
   constructor(@Inject(HttpClient) public http: HttpClient, @Inject(NGXLogger) public logger: NGXLogger,
               @Inject(CtsConstantTokenService) public config: CtsConstant) {
     this.apiUrl = config.apiUrl;
-    console.log(this.config.apiUrl);
-    console.log(this.apiUrl);
   }
 
   private serializeData = (data) => {
@@ -42,7 +40,6 @@ export class CtsService {
    * converts the given Molecule to an InChI Key
    */
   convertToInchiKey(molecule, callback, errorCallback): void {
-    this.logger.info(this.apiUrl);
     const serializedMolecule = this.serializeData(molecule);
     this.http.post(`${this.apiUrl}/service/moltoinchi`, {mol: serializedMolecule},
       {headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'}}).subscribe((res: any) => {
@@ -87,7 +84,6 @@ export class CtsService {
    * converts an InChI Key to a molecule
    */
   convertInchiKeyToMol(inchiKey, callback, errorCallback): void {
-    this.logger.info(this.apiUrl);
     this.http.get(`${this.apiUrl}/service/inchikeytomol/${inchiKey}`).subscribe((res: any) => {
       if (typeof res !== 'undefined') {
         if (res.error !== '') {
@@ -127,7 +123,6 @@ export class CtsService {
    * utilizes chemspider to convert from a smiles to an inchi
    */
   convertSmileToInChICode(smiles, callback, errorCallback): void {
-    this.logger.info(this.apiUrl);
     const serializedSmiles = this.serializeData(smiles);
     this.http.post(`${this.apiUrl}/service/smiletoinchi`, {smiles: serializedSmiles.trim()},
       {headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'}}).subscribe((res: any) => {
@@ -171,7 +166,6 @@ export class CtsService {
    * converts an inchi code to an inchi keyß
    */
   convertInChICodeToKey(inchiCode, callback, errorCallback): void {
-    this.logger.info(this.apiUrl);
     const serializedInchiCode = this.serializeData(inchiCode);
     this.http.post(`${this.apiUrl}/service/inchicodetoinchikey`, {inchicode: serializedInchiCode},
       {headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'}})
@@ -218,7 +212,6 @@ export class CtsService {
    * provides us with the molfile for this key
    */
   convertInChICodeToMol(inchiCode, callback, errorCallback): void {
-    this.logger.info(this.apiUrl);
     const serializedInchiCode = this.serializeData(inchiCode);
     this.http.post(`${this.apiUrl}/service/inchitomol`, { inchicode: serializedInchiCode },
       {headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'}})

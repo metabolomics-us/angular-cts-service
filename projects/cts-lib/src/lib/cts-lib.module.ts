@@ -18,7 +18,6 @@ import {CtsConstantTokenService} from './cts-constant-token.service';
 })
 export class CtsLibModule {
   static forRoot(config: CtsConstant): ModuleWithProviders<CtsLibModule> {
-    console.log(config);
     return {
       ngModule: CtsLibModule,
       providers: [
